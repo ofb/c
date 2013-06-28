@@ -161,7 +161,9 @@ void fillV(const unsigned int lambdaLength,
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
 	  mpc_set(thisEval, primZetaEval[conv< unsigned long > (chiArgZZp)], MPFR_RNDN);
-	  mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)], thisEval, MPFR_RNDN);
+	  #pragma omp critical (summing) {
+	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)], thisEval, MPFR_RNDN);
+	  }
 	  bak.restore(); // restore the modulus to p
 	}
       }
