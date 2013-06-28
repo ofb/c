@@ -174,6 +174,11 @@ void fillV(const unsigned int lambdaLength,
 }
 
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
+  FILE *output;
+  char output_filename[ 32 ];
+  sprintf ( "out%6d.txt", p );
+  output = fopen ( output_filename, "w" );
+
   printf("{{%lu},{", p);
   // iterate on the lambdas
   for (unsigned int a = 0; a < lambdaLength; ++a) {
@@ -189,6 +194,7 @@ void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
     if (a < lambdaLength-1) cout << ",";
   }
   cout << "}}";
+  fclose ( output );
   return;
 }
 
@@ -240,12 +246,10 @@ int main(int argc, char *argv[]) {
   MPI_Comm_size ( MPI_COMM_WORLD, &nprocs );
 
   for (unsigned int n = params.first; n < params.first + params.second; ++n) {
-    cout << "{";
     if ( n % nprocs == rank ) {
       pCharSum(n, lambdaLength, lambdas);
     }
     if (n < params.first + params.second -1) cout << ",";
-    cout << "}\n";
   }
 
   // Sync the MPI processes and quit
