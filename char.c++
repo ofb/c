@@ -241,7 +241,9 @@ int main(int argc, char *argv[]) {
   MPI_Comm_size ( MPI_COMM_WORLD, &nprocs );
 
   for (unsigned int n = params.first; n < params.first + params.second; ++n) {
-    pCharSum(n, lambdaLength, lambdas);
+    if ( n % nprocs == rank ) {
+      pCharSum(n, lambdaLength, lambdas);
+    }
     if (n < params.first + params.second -1) cout << ",";
   }
   cout << "}\n";
