@@ -176,24 +176,24 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf ( "out%6d.txt", p );
+  sprintf ("out%6d.txt", p);
   output = fopen ( output_filename, "w" );
 
-  printf("{{%lu},{", p);
+  fprintf(output, "{{%lu},{", p);
   // iterate on the lambdas
   for (unsigned int a = 0; a < lambdaLength; ++a) {
-    cout << "{";
+    fprintf(output, "{");
     for (unsigned long b = 0; b < (p-2); ++b) {
-      mpfr_out_str(stdout, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
-      cout << "+(";
-      mpfr_out_str(stdout, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
-      cout << "I)";
-      if (b < p-3) cout << ",";
+      mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
+      fprintf(output, "+(");
+      mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
+      fprintf(output, "I)";
+      if (b < p-3) fprintf(output, ",");
     }
-    cout << "}";
-    if (a < lambdaLength-1) cout << ",";
+    fprintf(output, "}");
+    if (a < lambdaLength-1) fprintf(output, ",");
   }
-  cout << "}}";
+  fprintf(output, "}}");
   fclose ( output );
   return;
 }
@@ -249,7 +249,6 @@ int main(int argc, char *argv[]) {
     if ( n % nprocs == rank ) {
       pCharSum(n, lambdaLength, lambdas);
     }
-    if (n < params.first + params.second -1) cout << ",";
   }
 
   // Sync the MPI processes and quit
