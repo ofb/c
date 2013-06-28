@@ -135,7 +135,7 @@ void fillV(const unsigned int lambdaLength,
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
   unsigned int lambda;
-  #pragma omp parallel for schedule(static) default(none) shared(p, evalV, primZetaEval)
+#pragma omp parallel for schedule(static) private(logArgZZp, chiArgZZp, intermediateZZ, bak, lambdas, logtable) shared(p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       for (unsigned long c = 1; c < p-1; ++c) {
