@@ -7,6 +7,7 @@
 #include <NTL/ZZ_p.h> // NTL modular p library (includes iostream, etc.)
 #include "mpfr.h"
 #include "mpc.h"
+#include "mpi.h"
 
 using namespace std;
 using namespace NTL;
@@ -173,21 +174,27 @@ void fillV(const unsigned int lambdaLength,
 }
 
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
-  printf("{{%lu},{", p);
+  FILE *output;
+  char output_filename[ 32 ];
+  sprintf ("out%6d.txt", p);
+  output = fopen ( output_filename, "w" );
+
+  fprintf(output, "{{%lu},{", p);
   // iterate on the lambdas
   for (unsigned int a = 0; a < lambdaLength; ++a) {
-    cout << "{";
+    fprintf(output, "{");
     for (unsigned long b = 0; b < (p-2); ++b) {
-      mpfr_out_str(stdout, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
-      cout << "+(";
-      mpfr_out_str(stdout, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
-      cout << "I)";
-      if (b < p-3) cout << ",";
+      mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
+      fprintf(output, "+(");
+      mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
+      fprintf(output, "I)";
+      if (b < p-3) fprintf(output, ",");
     }
-    cout << "}";
-    if (a < lambdaLength-1) cout << ",";
+    fprintf(output, "}");
+    if (a < lambdaLength-1) fprintf(output, ",");
   }
-  cout << "}}";
+  fprintf(output, "}}");
+  fclose ( output );
   return;
 }
 
@@ -224,16 +231,27 @@ void pCharSum(const unsigned long primeIndex,
 }  
 
 int main(int argc, char *argv[]) {
+  // rank is the MPI process id, nprocs is the number of MPI processes.
+  int rank, nprocs;
+
   const unsigned int lambdaLength = argc-3;
   unsigned int lambdas[argc-3];
   // params.first is primeIndex. params.second is iterationCount.
   pair< unsigned int, unsigned int > params = validateParams(argc, argv, lambdas);
   if (params.first == 0) return 0;
-  cout << "{";
+
+  // initialize MPI and assign values to rank and nprocs.
+  MPI_Init ( &argc, &argv );
+  MPI_Comm_rank ( MPI_COMM_WORLD, &rank );
+  MPI_Comm_size ( MPI_COMM_WORLD, &nprocs );
+
   for (unsigned int n = params.first; n < params.first + params.second; ++n) {
-    pCharSum(n, lambdaLength, lambdas);
-    if (n < params.first + params.second -1) cout << ",";
+    if ( n % nprocs == rank ) {
+      pCharSum(n, lambdaLength, lambdas);
+    }
   }
-  cout << "}\n";
+
+  // Sync the MPI processes and quit
+  MPI_Finalize();
   return 0;
 }
