@@ -8,6 +8,7 @@
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpi.h"
+#include "omp.h"
 
 using namespace std;
 using namespace NTL;
@@ -129,11 +130,13 @@ void fillV(const unsigned int lambdaLength,
   mpc_t runningSum, thisEval;
   mpc_init2(runningSum, 64);
   mpc_init2(thisEval, 64);
+
   // lambdas account for a shift in the evaluation,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
   unsigned int lambda;
+  #pragma omp parallel for schedule(static) default(private) shared(evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       for (unsigned long c = 1; c < p-1; ++c) {
@@ -148,7 +151,7 @@ void fillV(const unsigned int lambdaLength,
 	  // Implicit promotion from ulong to ZZ_p on both arguments of mul.
 	  // Explicit namespace to indicate where this function is coming from.
 	  NTL::mul(intermediateZZ,
-	           conv< ZZ > (c),
+		   conv< ZZ > (c),
 		   conv< ZZ > (logtable[conv< unsigned long > (logArgZZp-1)])
 		   );
 	  bak.save(); // saves the p modulus before switching to mod p-1
@@ -164,6 +167,7 @@ void fillV(const unsigned int lambdaLength,
       }
     }
   }
+
   // clean up
   for (unsigned long n = 0; n < p-1; ++n) {
     mpc_clear(primZetaEval[n]);
