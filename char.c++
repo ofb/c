@@ -176,7 +176,7 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf ("out%6d.txt", p);
+  sprintf (output_filename, "out%06lu.txt", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);
@@ -187,7 +187,7 @@ void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
       mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
       fprintf(output, "+(");
       mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
-      fprintf(output, "I)";
+      fprintf(output, "I");
       if (b < p-3) fprintf(output, ",");
     }
     fprintf(output, "}");
