@@ -135,11 +135,12 @@ void fillV(const unsigned int lambdaLength,
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
   unsigned int lambda;
-#pragma omp parallel for schedule(static) private(logArgZZp, chiArgZZp, intermediateZZ, bak, lambdas, logtable) shared(p, evalV, primZetaEval)
+  #pragma omp parallel for schedule(static) private(logArgZZp, chiArgZZp, intermediateZZ, bak) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
+	  //ZZ_p::init(conv< ZZ > (p));
 	  // have to convert from ulong to ZZ to ZZ_p since
 	  // ZZ_p doesn't directly accept ulong conversions
 	  conv(logArgZZp, conv< ZZ > (p1+p2+p1*p1*p2+p1*p2*p2+p1*p1*p2*p2+lambdas[l]));
