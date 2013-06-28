@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <NTL/ZZ.h>
-#include <NTL/ZZ_p.h> // NTL modular p library (includes iostream, etc.)
+#include <NTL/ZZ_p.h>
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpi.h"
@@ -41,10 +41,13 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
     }
   else
     {
-      cout << "Please indicate the nth prime you wish to evaluate at by "
-	   << "calling this program like \'char n\'.\n"
+      cout << "Please call this program like \'char index iterations lambda1 lambda2...\' "
+	   << "where index is the index of the prime you wish to start at, "
+	   << "iterations equals the number of iterations you wish to run, "
+	   << "and the list of lambdas equal the values for the lambda parameters"
+	   << "you wish to run.\n"
 	   << "We only have log tables for the first 10,000 primes, "
-	   << "so please choose n <= 10,000.\n";
+	   << "so please choose a value for the prime index <= 10,000.\n";
       return make_pair(0, 0);
     }
   
@@ -54,13 +57,13 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 void getLogs(unsigned long p, unsigned long table[]) {
   stringstream ss;
   ss << p;
+  // maybe need to change this to an absolute path once we run on a compute node
   string path = string("./logtables/table") + ss.str();
   ifstream infile(path.c_str());
   unsigned long token;
   for (unsigned long i = 0; i < p-1; ++i) {
     infile >> token;
     table[i] = token;
-    // printf("i = %lu, token = %lu\n", i, token);
   }
   return;
 }
@@ -127,10 +130,6 @@ void fillV(const unsigned int lambdaLength,
   ZZ_p logArgZZp; // mod p
   ZZ_p chiArgZZp; // mod p-1
   ZZ intermediateZZ;
-  mpc_t runningSum, thisEval;
-  mpc_init2(runningSum, 64);
-  mpc_init2(thisEval, 64);
-
   // lambdas account for a shift in the evaluation,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
@@ -160,9 +159,9 @@ void fillV(const unsigned int lambdaLength,
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
-	  mpc_set(thisEval, primZetaEval[conv< unsigned long > (chiArgZZp)], MPFR_RNDN);
 	  #pragma omp critical (summing) {
-	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)], thisEval, MPFR_RNDN);
+	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
+		    primZetaEval[conv< unsigned long > (chiArgZZp)], MPFR_RNDN);
 	  }
 	  bak.restore(); // restore the modulus to p
 	}
@@ -174,8 +173,6 @@ void fillV(const unsigned int lambdaLength,
   for (unsigned long n = 0; n < p-1; ++n) {
     mpc_clear(primZetaEval[n]);
   }
-  mpc_clear(runningSum);
-  mpc_clear(thisEval);
   return;
 }
 
@@ -193,7 +190,7 @@ void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
       mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
       fprintf(output, "+(");
       mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
-      fprintf(output, "I");
+      fprintf(output, "I)");
       if (b < p-3) fprintf(output, ",");
     }
     fprintf(output, "}");
