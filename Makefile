@@ -9,4 +9,4 @@ OPENMP = -openmp
 
 
 default:
-	$(CC) $(INCLUDE) char.c++ $(EXECUTABLE) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) 
+	$(CC) $(INCLUDE) char.c++ $(EXECUTABLE) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) $(OPENMP)
