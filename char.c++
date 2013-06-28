@@ -8,6 +8,7 @@
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpi.h"
+#include "omp.h"
 
 using namespace std;
 using namespace NTL;
@@ -134,6 +135,7 @@ void fillV(const unsigned int lambdaLength,
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
   unsigned int lambda;
+  #pragma omp parallel for schedule(static) default(private) shared(p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       for (unsigned long c = 1; c < p-1; ++c) {
@@ -148,7 +150,7 @@ void fillV(const unsigned int lambdaLength,
 	  // Implicit promotion from ulong to ZZ_p on both arguments of mul.
 	  // Explicit namespace to indicate where this function is coming from.
 	  NTL::mul(intermediateZZ,
-	           conv< ZZ > (c),
+		   conv< ZZ > (c),
 		   conv< ZZ > (logtable[conv< unsigned long > (logArgZZp-1)])
 		   );
 	  bak.save(); // saves the p modulus before switching to mod p-1
@@ -157,13 +159,16 @@ void fillV(const unsigned int lambdaLength,
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
-	  mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		  primZetaEval[conv< unsigned long > (chiArgZZp)], MPFR_RNDN);
+	  #pragma omp critical (summing) {
+	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
+		    primZetaEval[conv< unsigned long > (chiArgZZp)], MPFR_RNDN);
+	  }
 	  bak.restore(); // restore the modulus to p
 	}
       }
     }
   }
+
   // clean up
   for (unsigned long n = 0; n < p-1; ++n) {
     mpc_clear(primZetaEval[n]);
