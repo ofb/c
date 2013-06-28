@@ -233,7 +233,6 @@ int main(int argc, char *argv[]) {
   // params.first is primeIndex. params.second is iterationCount.
   pair< unsigned int, unsigned int > params = validateParams(argc, argv, lambdas);
   if (params.first == 0) return 0;
-  cout << "{";
 
   // initialize MPI and assign values to rank and nprocs.
   MPI_Init ( &argc, &argv );
@@ -241,12 +240,13 @@ int main(int argc, char *argv[]) {
   MPI_Comm_size ( MPI_COMM_WORLD, &nprocs );
 
   for (unsigned int n = params.first; n < params.first + params.second; ++n) {
+    cout << "{";
     if ( n % nprocs == rank ) {
       pCharSum(n, lambdaLength, lambdas);
     }
     if (n < params.first + params.second -1) cout << ",";
+    cout << "}\n";
   }
-  cout << "}\n";
 
   // Sync the MPI processes and quit
   MPI_Finalize();
