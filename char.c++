@@ -132,8 +132,9 @@ void fillV(const unsigned int lambdaLength,
   unsigned int lambda;
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    mpz_t logArg, chiArg, p1big, p2big, p1p2big;
+    mpz_t logArg, logArgLambda, chiArg, p1big, p2big, p1p2big;
     mpz_init(logArg);
+    mpz_init(logArgLambda);
     mpz_init(chiArg);
     mpz_init(p2big);
     mpz_init(p1p2big);
@@ -141,24 +142,26 @@ void fillV(const unsigned int lambdaLength,
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       mpz_set_ui(p2big, p2);
       mpz_mul(p1p2big, p1big, p2big);
+      mpz_set_ui(logArg, 0);
+      // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
+      // = p1+p2+(p1+p2)*p1*p2+p1*p2
+      mpz_add(logArg, logArg, p1big);
+      mpz_add(logArg, logArg, p2big);
+      mpz_addmul(logArg, p1big, p1p2big);
+      mpz_addmul(logArg, p2big, p1p2big);
+      mpz_addmul(logArg, p1p2big, p1p2big);
+      mpz_mod_ui(logArg, logArg, p);
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  mpz_set_ui(logArg, 0);
+	  mpz_set_ui(logArgLambda, 0);
 	  mpz_set_ui(chiArg, 0);
-	  // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
-	  // = p1+p2+(p1+p2)*p1*p2+p1*p2
-	  mpz_add(logArg, logArg, p1big);
-	  mpz_add(logArg, logArg, p2big);
-	  mpz_addmul(logArg, p1big, p1p2big);
-	  mpz_addmul(logArg, p2big, p1p2big);
-	  mpz_addmul(logArg, p1p2big, p1p2big);
-	  mpz_add_ui(logArg, logArg, lambdas[l]);
-	  mpz_mod_ui(logArg, logArg, p);
-	  if (!mpz_sgn(logArg)) continue;
+	  mpz_add_ui(logArgLambda, logArg, lambdas[l]);
+	  mpz_mod_ui(logArgLambda, logArgLambda, p);
+	  if (!mpz_sgn(logArgLambda)) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  mpz_add_ui(chiArg, chiArg, logtable[mpz_get_ui(logArg)-1]);
+	  mpz_add_ui(chiArg, chiArg, logtable[mpz_get_ui(logArgLambda)-1]);
 	  mpz_mul_ui(chiArg, chiArg, c);
 	  mpz_mod_ui(chiArg, chiArg, p-1);
 	  // We look up the evaluation of chi at this point.
@@ -173,6 +176,7 @@ void fillV(const unsigned int lambdaLength,
       }
     }
     mpz_clear(logArg);
+    mpz_clear(logArgLambda);
     mpz_clear(chiArg);
     mpz_clear(p1big);
     mpz_clear(p2big);
