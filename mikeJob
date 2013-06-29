@@ -7,6 +7,7 @@
 # we have all the cores in each node available to us.
 # we specify how many processors mpi will run on below, when we define np.
 #PBS -l nodes=8:ppn=16
+#PBS -A hpc_characters
 #PBS -m b
 #PBS -m a
 #PBS -m e
