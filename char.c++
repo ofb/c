@@ -133,7 +133,6 @@ void fillV(const unsigned int lambdaLength,
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     int ID = omp_get_thread_num();
-    printf("OpenMP thread ID = %d\n", ID);
     mpz_t logArg, chiArg, p1big, p2big, p1p2big;
     mpz_init(logArg);
     mpz_init(chiArg);
@@ -191,7 +190,7 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf (output_filename, "out%06lu.txt", p);
+  sprintf (output_filename, "output/out%06lu", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);
