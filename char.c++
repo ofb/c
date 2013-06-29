@@ -132,7 +132,6 @@ void fillV(const unsigned int lambdaLength,
   unsigned int lambda;
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    int ID = omp_get_thread_num();
     mpz_t logArg, chiArg, p1big, p2big, p1p2big;
     mpz_init(logArg);
     mpz_init(chiArg);
