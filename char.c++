@@ -147,7 +147,7 @@ void fillV(const unsigned int lambdaLength,
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  chiArg = ((ull) c)*((ull) logtable[mpz_get_ui(logArgLambda)-1]) % p;
+	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % p;
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
