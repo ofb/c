@@ -130,10 +130,10 @@ void fillV(const unsigned int lambdaLength,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
-  ull logArg, logArgLambda, p1ull, p2ull;
-  unsigned long chiArg;
-#pragma omp parallel for schedule(static) private(logArg, logArgLambda, chiArg, p1ull, p2ull) shared(lambdas, logtable, p, evalV, primZetaEval)
+#pragma omp parallel for schedule(static) /*private(logArg, logArgLambda, chiArg, p1ull, p2ull)*/ shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
+    ull logArg, logArgLambda, p1ull, p2ull;
+    unsigned long chiArg;
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
@@ -142,7 +142,7 @@ void fillV(const unsigned int lambdaLength,
       logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  logArgLambda = logArg + (ull) lambdas[l];
+	  logArgLambda = (logArg + (ull) lambdas[l]) % (ull) p;
 	  if (!logArgLambda) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
