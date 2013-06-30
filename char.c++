@@ -4,11 +4,12 @@
 #include <string>
 #include <vector>
 #include <NTL/ZZ.h>
-#include <NTL/ZZ_p.h>
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpi.h"
 #include "omp.h"
+
+typedef unsigned long long ull;
 
 using namespace std;
 using namespace NTL;
@@ -129,41 +130,24 @@ void fillV(const unsigned int lambdaLength,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
-  unsigned int lambda;
-#pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
+  ull logArg, logArgLambda, p1ull, p2ull;
+  unsigned long chiArg;
+#pragma omp parallel for schedule(static) private(logArg, logArgLambda, chiArg) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    mpz_t logArg, logArgLambda, chiArg, p1big, p2big, p1p2big;
-    mpz_init(logArg);
-    mpz_init(logArgLambda);
-    mpz_init(chiArg);
-    mpz_init(p2big);
-    mpz_init(p1p2big);
-    mpz_init_set_ui(p1big, p1);
+    p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
-      mpz_set_ui(p2big, p2);
-      mpz_mul(p1p2big, p1big, p2big);
-      mpz_set_ui(logArg, 0);
+      p2ull = (ull) p2;
       // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
-      // = p1+p2+(p1+p2)*p1*p2+p1*p2
-      mpz_add(logArg, logArg, p1big);
-      mpz_add(logArg, logArg, p2big);
-      mpz_addmul(logArg, p1big, p1p2big);
-      mpz_addmul(logArg, p2big, p1p2big);
-      mpz_addmul(logArg, p1p2big, p1p2big);
-      mpz_mod_ui(logArg, logArg, p);
+      // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2
+      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  mpz_set_ui(logArgLambda, 0);
-	  mpz_set_ui(chiArg, 0);
-	  mpz_add_ui(logArgLambda, logArg, lambdas[l]);
-	  mpz_mod_ui(logArgLambda, logArgLambda, p);
-	  if (!mpz_sgn(logArgLambda)) continue;
+	  logArgLambda = logArg + (ULL) lambdas[i];
+	  if (!logArgLambda) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  mpz_add_ui(chiArg, chiArg, logtable[mpz_get_ui(logArgLambda)-1]);
-	  mpz_mul_ui(chiArg, chiArg, c);
-	  mpz_mod_ui(chiArg, chiArg, p-1);
+	  chiArg = ((ull) c)*((ull) logtable[mpz_get_ui(logArgLambda)-1]) % p;
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
@@ -175,12 +159,6 @@ void fillV(const unsigned int lambdaLength,
 	}
       }
     }
-    mpz_clear(logArg);
-    mpz_clear(logArgLambda);
-    mpz_clear(chiArg);
-    mpz_clear(p1big);
-    mpz_clear(p2big);
-    mpz_clear(p1p2big);
   }
 
   // clean up
@@ -245,9 +223,22 @@ void pCharSum(const unsigned long primeIndex,
   mpc_clear(zeta);
   clear2DV(lambdaLength*(p-2), lambdaChiV);
   return;
-}  
+}
+
+void ullTest(void) {
+  unsigned long l = 23456UL;
+  printf("unsigned long l = %lu. ", l);
+  ull ll = (ull) l;
+  printf("ull ll = %llu.\n", ll);
+  unsigned int p = 7;
+  ull sum = (2*ll+2*ll*ll*ll+ll*ll*ll*ll);
+  ull summod = (2*ll+2*ll*ll*ll+ll*ll*ll*ll) % (ull) p;
+  printf("ull sum = %llu\n ull summod = %llu\n", sum, summod);
+  return;
+}
 
 int main(int argc, char *argv[]) {
+  ullTest();
   // rank is the MPI process id, nprocs is the number of MPI processes.
   int rank, nprocs;
 
