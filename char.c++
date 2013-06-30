@@ -142,7 +142,7 @@ void fillV(const unsigned int lambdaLength,
       logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  logArgLambda = logArg + (ULL) lambdas[i];
+	  logArgLambda = logArg + (ull) lambdas[i];
 	  if (!logArgLambda) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
@@ -154,7 +154,7 @@ void fillV(const unsigned int lambdaLength,
 	  #pragma omp critical (summing)
 	  {
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[mpz_get_ui(chiArg)], MPFR_RNDN);
+		    primZetaEval[chiArg], MPFR_RNDN);
 	  }
 	}
       }
