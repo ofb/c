@@ -130,7 +130,7 @@ void fillV(const unsigned int lambdaLength,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
-#pragma omp parallel for schedule(static) /*private(logArg, logArgLambda, chiArg, p1ull, p2ull)*/ shared(lambdas, logtable, p, evalV, primZetaEval)
+#pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     ull logArg, logArgLambda, p1ull, p2ull;
     unsigned long chiArg;
