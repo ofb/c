@@ -147,7 +147,7 @@ void fillV(const unsigned int lambdaLength,
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % p;
+	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) p;
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
@@ -225,23 +225,7 @@ void pCharSum(const unsigned long primeIndex,
   return;
 }
 
-void ullTest(void) {
-  unsigned long l = 23456UL;
-  printf("unsigned long l = %lu. ", l);
-  ull ll = (ull) l;
-  printf("ull ll = %llu.\n", ll);
-  unsigned int p = 7;
-  ull sum = (2*ll+2*ll*ll*ll+ll*ll*ll*ll);
-  unsigned long summod = (2*ll+2*ll*ll*ll+ll*ll*ll*ll) % p;
-  printf("ull sum = %llu\nunsigned long summod = %lu\n", sum, summod);
-  ull badsum = 2*l+2*l*l*l+l*l*l*l;
-  ull badsummod = 2*l+2*l*l*l+l*l*l*l % p;
-  printf("ull badsum = %llu\nunsigned long badsummod = %lu\n", badsum, badsummod);
-  return;
-}
-
 int main(int argc, char *argv[]) {
-  ullTest();
   // rank is the MPI process id, nprocs is the number of MPI processes.
   int rank, nprocs;
 
