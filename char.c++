@@ -132,7 +132,7 @@ void fillV(const unsigned int lambdaLength,
   // a primitive root to get the data for all of them.
   ull logArg, logArgLambda, p1ull, p2ull;
   unsigned long chiArg;
-#pragma omp parallel for schedule(static) private(logArg, logArgLambda, chiArg) shared(lambdas, logtable, p, evalV, primZetaEval)
+#pragma omp parallel for schedule(static) private(logArg, logArgLambda, chiArg, p1ull, p2ull) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
@@ -147,7 +147,7 @@ void fillV(const unsigned int lambdaLength,
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) p;
+	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) (p-1);
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
