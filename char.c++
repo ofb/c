@@ -47,8 +47,8 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"
 	   << "you wish to run.\n"
-	   << "We only have log tables for the first 10,000 primes, "
-	   << "so please choose a value for the prime index <= 10,000.\n";
+	   << "Calculations in this program overflow for a prime > 62,000,"
+	   << "so please choose a value for the prime index <= 6,232.\n";
       return make_pair(0, 0);
     }
   
