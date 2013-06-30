@@ -142,7 +142,7 @@ void fillV(const unsigned int lambdaLength,
       logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  logArgLambda = logArg + (ull) lambdas[i];
+	  logArgLambda = logArg + (ull) lambdas[l];
 	  if (!logArgLambda) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
