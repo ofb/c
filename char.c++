@@ -232,8 +232,11 @@ void ullTest(void) {
   printf("ull ll = %llu.\n", ll);
   unsigned int p = 7;
   ull sum = (2*ll+2*ll*ll*ll+ll*ll*ll*ll);
-  ull summod = (2*ll+2*ll*ll*ll+ll*ll*ll*ll) % (ull) p;
-  printf("ull sum = %llu\n ull summod = %llu\n", sum, summod);
+  unsigned long summod = (2*ll+2*ll*ll*ll+ll*ll*ll*ll) % p;
+  printf("ull sum = %llu\nunsigned long summod = %lu\n", sum, summod);
+  ull badsum = 2*l+2*l*l*l+l*l*l*l;
+  ull badsummod = 2*l+2*l*l*l+l*l*l*l % p;
+  printf("ull badsum = %llu\nunsigned long badsummod = %lu\n", badsum, badsummod);
   return;
 }
 
