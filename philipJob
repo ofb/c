@@ -1,14 +1,12 @@
 #!/bin/bash
 #
-# script for tezpur
+# script for philip
 # 
 # note: this ppn in the first line is not for mpi; it just is so that
 # we have all the cores in each node available to us.
 # we specify how many processors mpi will run on below, when we define np.
-#PBS -l nodes=8:ppn=4
-#PBS -m b
-#PBS -m a
-#PBS -m e
+#PBS -l nodes=4:ppn=8
+#PBS -m b a e
 #PBS -M Owen.Barrett@gmail.com
 #PBS -q checkpt
 #PBS -l walltime=00:10:00
@@ -17,7 +15,8 @@
 
 date
 
-# put output in our work directory
+# put output in our work directory. note that while tezpur and philip share
+# a work directory, mike's is distinct.
 cd /work/obarrett
 mkdir -p output
 
@@ -25,7 +24,7 @@ cat $PBS_NODEFILE > hosts
 cat $PBS_NODEFILE | uniq > uniqhosts
 nodes=$(cat uniqhosts | wc -l)
 
-export OMP_NUM_THREADS=2
+export OMP_NUM_THREADS=4
 let np=2*nodes
 
 mpirun -np $np -hostfile uniqhosts /work/obarrett/char 2 32 0 1 2 3

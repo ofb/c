@@ -4,11 +4,12 @@
 #include <string>
 #include <vector>
 #include <NTL/ZZ.h>
-#include <NTL/ZZ_p.h>
 #include "mpfr.h"
 #include "mpc.h"
 #include "mpi.h"
 #include "omp.h"
+
+typedef unsigned long long ull;
 
 using namespace std;
 using namespace NTL;
@@ -46,8 +47,8 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"
 	   << "you wish to run.\n"
-	   << "We only have log tables for the first 10,000 primes, "
-	   << "so please choose a value for the prime index <= 10,000.\n";
+	   << "Calculations in this program overflow for a prime > 62,000,"
+	   << "so please choose a value for the prime index <= 6,232.\n";
       return make_pair(0, 0);
     }
   
@@ -129,54 +130,35 @@ void fillV(const unsigned int lambdaLength,
   // as does the choice of chi. Since the chis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
-  unsigned int lambda;
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    mpz_t logArg, chiArg, p1big, p2big, p1p2big;
-    mpz_init(logArg);
-    mpz_init(chiArg);
-    mpz_init(p2big);
-    mpz_init(p1p2big);
-    mpz_init_set_ui(p1big, p1);
+    ull logArg, logArgLambda, p1ull, p2ull;
+    unsigned long chiArg;
+    p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
-      mpz_set_ui(p2big, p2);
-      mpz_mul(p1p2big, p1big, p2big);
+      p2ull = (ull) p2;
+      // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
+      // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2
+      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
       for (unsigned long c = 1; c < p-1; ++c) {
 	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  mpz_set_ui(logArg, 0);
-	  mpz_set_ui(chiArg, 0);
-	  // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
-	  // = p1+p2+(p1+p2)*p1*p2+p1*p2
-	  mpz_add(logArg, logArg, p1big);
-	  mpz_add(logArg, logArg, p2big);
-	  mpz_addmul(logArg, p1big, p1p2big);
-	  mpz_addmul(logArg, p2big, p1p2big);
-	  mpz_addmul(logArg, p1p2big, p1p2big);
-	  mpz_add_ui(logArg, logArg, lambdas[l]);
-	  mpz_mod_ui(logArg, logArg, p);
-	  if (!mpz_sgn(logArg)) continue;
+	  logArgLambda = (logArg + (ull) lambdas[l]) % (ull) p;
+	  if (!logArgLambda) continue;
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  mpz_add_ui(chiArg, chiArg, logtable[mpz_get_ui(logArg)-1]);
-	  mpz_mul_ui(chiArg, chiArg, c);
-	  mpz_mod_ui(chiArg, chiArg, p-1);
+	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) (p-1);
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[mpz_get_ui(chiArg)], MPFR_RNDN);
+		    primZetaEval[chiArg], MPFR_RNDN);
 	  }
 	}
       }
     }
-    mpz_clear(logArg);
-    mpz_clear(chiArg);
-    mpz_clear(p1big);
-    mpz_clear(p2big);
-    mpz_clear(p1p2big);
   }
 
   // clean up
@@ -241,7 +223,7 @@ void pCharSum(const unsigned long primeIndex,
   mpc_clear(zeta);
   clear2DV(lambdaLength*(p-2), lambdaChiV);
   return;
-}  
+}
 
 int main(int argc, char *argv[]) {
   // rank is the MPI process id, nprocs is the number of MPI processes.
