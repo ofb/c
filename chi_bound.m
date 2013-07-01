@@ -1,7 +1,7 @@
 #!/usr/local/bin/MathematicaScript -script
 
 # SetDirectory["."]
-l=ReadList["catted"][[1]];
+l=ReadList["f20"][[1]];
 length=Length[l]
 
 mag=l;
@@ -22,13 +22,7 @@ For[n=1,n<=length,n++,
 mag[[n]][[1]] = mag[[n]][[1]] [[1]]
 ]
 
-plotSmall=ListPlot[mag,ImageSize->Large,PlotLabel->"Maximum value sum takes for prime p, over all nontrivial chi and for \[Lambda]\[Element]{0,1,2,3}",PlotRange->{{0,250},{0,1500}}]
-
-plotFull=ListPlot[mag,ImageSize->Large,PlotLabel->"Maximum value sum takes for prime p, over all nontrivial chi and for \[Lambda]\[Element]{0,1,2,3}"]
-
-Export["matho/plotSmall.png",plotSmall]
-
-Export["matho/plotFull.png",plotFull]
+Export["matho/absoluteMagnitude.dat",mag]
 
 
 
@@ -63,8 +57,7 @@ lambda[m]=ltemp;
 ]
 
 For[m=1,m<=lambdaLength,m++,
-plots[m]=ListPlot[lambda[m],ImageSize->Large,PlotLabel->"Maximum value sum takes for prime p, over all nontrivial chi and for \[Lambda] index="<>ToString[m]];
-Export["matho/plotLambda-"<>ToString[m]<>".png",plots[m]]
+Export["matho/plotLambda-"<>ToString[m]<>".dat",lambda[m]]
 ]
 
 
@@ -83,9 +76,7 @@ d[[n]]=Outer[{#1,Chop[Re[#2]],Chop[Im[#2]]}&,d[[n]][[1]],d[[n]][[2]]][[1]]
 
 d=Flatten[d,1];
 
-dPlot=ListPointPlot3D[d,ImageSize->Large,PlotRange->{{0,l[[length]][[1]][[1]]+1},All,All}, PlotLabel->"Character sum values as C-valued function over p, over all nontrivial chi and for \[Lambda]\[Element]{0,1,2,3}",ViewPoint->{.5,0,-1},PreserveImageOptions->False]
-
-Export["matho/3DPlot.png",dPlot]
+Export["matho/3DPlot.dat",d]
 
 
 
@@ -110,6 +101,5 @@ lambdaD[m]=ltemp
 ]
 
 For[m=1,m<=lambdaLength,m++,
-plots[m]=ListPointPlot3D[lambdaD[m],ImageSize->Large,PlotRange->{{0,l[[length]][[1]][[1]]+1},All,All}, PlotLabel->"Character sum values as C-valued function over p, over all nontrivial chi and for \[Lambda] index="<>ToString[m],ViewPoint->{.5,0,-1},PreserveImageOptions->False];
-Export["matho/3DPlotLambda-"<>ToString[m]<>".png",plots[m]]
+Export["matho/lambda3D-"<>ToString[m]<>".png",lambdaD[m]]
 ]
