@@ -18,7 +18,7 @@ using namespace NTL;
 
 pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsigned int lambdas[]) {
   unsigned int primeIndex;
-  unsigned int iterationCount;
+  unsigned int iterationCount = 0;
   // first argument is not used (it's the name of the program); second is the prime
   // index to start at; third is the number of primes to iterate on; all remaining
   // arguments are lambda values. Therefore a correct call includes 4 or more parameters.
