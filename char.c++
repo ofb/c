@@ -143,13 +143,13 @@ void fillV(const unsigned int lambdaLength,
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
-      // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+lambda
-      // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2
-      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull) % (ull) p;
-      for (unsigned long c = 1; c < p-1; ++c) {
-	for (unsigned int l = 0; l < lambdaLength; ++l) {
-	  logArgLambda = (logArg + (ull) lambdas[l]) % (ull) p;
-	  if (!logArgLambda) continue;
+      // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+1+lambda*p1*p2
+      // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2+1+lambda*p1*p2
+      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull+1) % (ull) p;
+      for (unsigned int l = 0; l < lambdaLength; ++l) {
+	logArgLambda = (logArg + ((ull) lambdas[l])*p1ull*p2ull) % (ull) p;
+	if (!logArgLambda) continue;
+        for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
