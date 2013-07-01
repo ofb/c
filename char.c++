@@ -9,6 +9,8 @@
 #include "mpi.h"
 #include "omp.h"
 
+#define MAX_PRIME_INDEX 6232
+
 typedef unsigned long long ull;
 
 using namespace std;
@@ -51,6 +53,10 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "so please choose a value for the prime index <= 6,232.\n";
       return make_pair(0, 0);
     }
+  if (primeIndex + interationCount > MAX_PRIME_INDEX) {
+	  cout << "Make sure that your prime index does not exceed " << MAX_PRIME_INDEX << "\n";
+	  return make_pair(0, 0);
+  }
   
   return make_pair(primeIndex, iterationCount);
 }
