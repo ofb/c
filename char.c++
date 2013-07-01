@@ -18,7 +18,7 @@ using namespace NTL;
 
 pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsigned int lambdas[]) {
   unsigned int primeIndex;
-  unsigned int iterationCount = 0;
+  unsigned int iterationCount;
   // first argument is not used (it's the name of the program); second is the prime
   // index to start at; third is the number of primes to iterate on; all remaining
   // arguments are lambda values. Therefore a correct call includes 4 or more parameters.
@@ -53,7 +53,7 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "so please choose a value for the prime index <= 6,232.\n";
       return make_pair(0, 0);
     }
-  if (primeIndex + interationCount > MAX_PRIME_INDEX) {
+  if (primeIndex + iterationCount > MAX_PRIME_INDEX) {
 	  cout << "Make sure that your prime index does not exceed " << MAX_PRIME_INDEX << "\n";
 	  return make_pair(0, 0);
   }
