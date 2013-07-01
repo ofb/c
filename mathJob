@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# script for mathematica
+# 
+#PBS -l nodes=1:ppn=1
+#PBS -A hpc_startup_obarrett
+#PBS -m e
+#PBS -M Owen.Barrett@gmail.com
+#PBS -q single
+#PBS -l walltime=00:10:00
+#PBS -o math.o
+#PBS -N mathematica
+
+date
+
+# put output in our work directory
+cd /work/obarrett
+mkdir -p matho
+
+math -script chi_bound.m
+
+date
+
+exit 0
