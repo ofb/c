@@ -164,7 +164,7 @@ void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
       fprintf(output, "+(");
       mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-1)+b]), MPFR_RNDN);
       fprintf(output, "I)");
-      if (b < p-3) fprintf(output, ",");
+      if (b < p-2) fprintf(output, ",");
     }
     fprintf(output, "}");
     if (a < lambdaLength-1) fprintf(output, ",");
