@@ -57,7 +57,7 @@ lambda[m]=ltemp;
 ]
 
 For[m=1,m<=lambdaLength,m++,
-Export["matho/lambda-"<>ToString[m]<>".dat",lambda[m]]
+Export["matho/lambda-"<>ToString[m-1]<>".dat",lambda[m]]
 ]
 
 
@@ -101,5 +101,5 @@ lambdaD[m]=ltemp
 ]
 
 For[m=1,m<=lambdaLength,m++,
-Export["matho/lambda3D-"<>ToString[m]<>".dat",lambdaD[m]]
+Export["matho/lambda3D-"<>ToString[m-1]<>".dat",lambdaD[m]]
 ]
