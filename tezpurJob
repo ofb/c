@@ -6,20 +6,21 @@
 # we have all the cores in each node available to us.
 # we specify how many processors mpi will run on below, when we define np.
 #PBS -l nodes=8:ppn=4
-#PBS -m b
-#PBS -m a
 #PBS -m e
 #PBS -M Owen.Barrett@gmail.com
 #PBS -q checkpt
 #PBS -l walltime=00:10:00
 #PBS -o char.o
-#PBS -N chartest
+#PBS -N char
 
 date
 
-# put output in our work directory
+# put output in our work directory. note that while tezpur and philip share
+# a work directory, mike's is distinct.
 cd /work/obarrett
-mkdir -p output
+# Depending on the program called
+# mkdir -p A2MultOut
+# mkdir -p A2AddOut
 
 cat $PBS_NODEFILE > hosts
 cat $PBS_NODEFILE | uniq > uniqhosts
@@ -28,7 +29,9 @@ nodes=$(cat uniqhosts | wc -l)
 export OMP_NUM_THREADS=2
 let np=2*nodes
 
-mpirun -np $np -hostfile uniqhosts /work/obarrett/char 2 32 0 1 2 3
+# Depending on the program called
+# mpirun -np $np -hostfile uniqhosts /work/obarrett/A2Mult 2 32 0 1 2 3
+# mpirun -np $np -hostfile uniqhosts /work/obarrett/A2Add 2 32 0 1 2 3
 
 date
 
