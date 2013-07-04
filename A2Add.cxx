@@ -61,20 +61,6 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
   return make_pair(primeIndex, iterationCount);
 }
 
-void getLogs(unsigned long p, unsigned long table[]) {
-  stringstream ss;
-  ss << p;
-  // maybe need to change this to an absolute path once we run on a compute node
-  string path = string("./logtables/table") + ss.str();
-  ifstream infile(path.c_str());
-  unsigned long token;
-  for (unsigned long i = 0; i < p-1; ++i) {
-    infile >> token;
-    table[i] = token;
-  }
-  return;
-}
-
 void assignZeta(mpc_t &zeta, unsigned long p) {
   mpfr_t pi;
   mpfr_init2(pi, 64);
@@ -86,13 +72,10 @@ void assignZeta(mpc_t &zeta, unsigned long p) {
   mpc_mul_i(zetaConstruct, zetaConstruct, 1, MPFR_RNDN); // multiply by i
   mpc_mul_fr(zetaConstruct, zetaConstruct, pi, MPFR_RNDN); // mult by MPFR
   mpc_mul_si(zetaConstruct, zetaConstruct, 2, MPFR_RNDN); // mult by long int
-  mpc_div_ui(zetaConstruct, zetaConstruct, p-1, MPFR_RNDN); // divide by unsigned long int
+  mpc_div_ui(zetaConstruct, zetaConstruct, p, MPFR_RNDN); // divide by unsigned long int
   mpc_exp(zetaConstruct, zetaConstruct, MPFR_RNDN);
 
   mpc_set(zeta, zetaConstruct, MPFR_RNDN);  
-  // printf("zeta is assigned to ");
-  // mpc_out_str(stdout, 10, 0, zeta, MPFR_RNDN);
-  // cout << endl;
   mpfr_clear(pi);
   mpc_clear(zetaConstruct);
   return;
@@ -108,59 +91,52 @@ void fillV(const unsigned int lambdaLength,
 	   const unsigned int lambdas[],
 	   unsigned long logtable[],
 	   mpc_t evalV[]) {
-  // We will only need to evaluate chi (by raising zeta to an element
-  // of F) p times, which equals the order of the multiplicative
-  // group. Though log has image in 0,...,p-2, n*log has codomain equal
-  // to all of F, 0,...,p-1, and is usually onto.
   mpc_t primZetaEval[p];
   for (unsigned long n = 0; n < p; ++n) {
     // initialize the mpc_t objects in our array
     mpc_init2(primZetaEval[n], 64);
-    // This 'evaluates' chi
+    // This 'evaluates' psi
     mpc_pow_ui(primZetaEval[n], zeta, n, MPFR_RNDN);
   }
-  // There are p-1 elements in the multiplicative group of characters,
+  // There are p elements in the multiplicative group of characters,
   // but we aren't interested in evaluating the trivial character.
   // We are using our horrible hack of collapsing what should be a
-  // 2D array into a 1D array, so each lambda has (p-2) characters
+  // 2D array into a 1D array, so each lambda has (p-1) characters
   // associated with it.
-  for (unsigned long n = 0; n < (p-2)*lambdaLength; ++n) {
+  for (unsigned long n = 0; n < (p-1)*lambdaLength; ++n) {
     mpc_init2(evalV[n], 64);
     mpc_set_si(evalV[n], 0, MPFR_RNDN);
   }
 
-  // Remember: the multiplicative characters form a group of order p-1,
-  // not p.
-  // log needs mod p; char exponent needs mod p-1
+  // Remember: the additive characters form a group of order p.
+  // log needs mod p; char exponent needs mod p.
   // lambdas account for a shift in the evaluation,
-  // as does the choice of chi. Since the chis form
+  // as does the choice of psi. Since the psis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    ull logArg, logArgLambda, p1ull, p2ull;
-    unsigned long chiArg;
+    ull psiArg, psiArgLambda, p1ull, p2ull;
+    unsigned long zetaPower;
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
       // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+1+lambda*p1*p2
       // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2+1+lambda*p1*p2
-      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull+1) % (ull) p;
+      psiArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
-	logArgLambda = (logArg + ((ull) lambdas[l])*p1ull*p2ull) % (ull) p;
-	if (!logArgLambda) continue;
-        for (unsigned long c = 1; c < p-1; ++c) {
-	  // We find n*Log(a+lambda).
-	  // Remember that the logtable index is given by the element of
-	  // the group that of which you want the log minus one.
-	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) (p-1);
-	  // We look up the evaluation of chi at this point.
+	psiArgLambda = (psiArg + ((ull) lambdas[l])*p1ull*p2ull) % (ull) p;
+	// disregard the trivial character where c = 0 or p
+        for (unsigned long c = 1; c < p; ++c) {
+	  // Remember, additive characters form a multiplicative group of order p.
+	  zetaPower = ((ull) c)*((ull) psiArgLambda) % (ull) p;
+	  // We look up the evaluation of psi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
-	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[chiArg], MPFR_RNDN);
+	    mpc_add(evalV[(p-1)*l+(c-1)], evalV[(p-1)*l+(c-1)],
+		    primZetaEval[zetaPower], MPFR_RNDN);
 	  }
 	}
       }
@@ -168,7 +144,7 @@ void fillV(const unsigned int lambdaLength,
   }
 
   // clean up
-  for (unsigned long n = 0; n < p-1; ++n) {
+  for (unsigned long n = 0; n < p; ++n) {
     mpc_clear(primZetaEval[n]);
   }
   return;
@@ -177,17 +153,17 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf (output_filename, "output/out%06lu", p);
+  sprintf (output_filename, "A2AddOut/a2add%06lu", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);
   // iterate on the lambdas
   for (unsigned int a = 0; a < lambdaLength; ++a) {
     fprintf(output, "{");
-    for (unsigned long b = 0; b < (p-2); ++b) {
-      mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-2)+b]), MPFR_RNDN);
+    for (unsigned long b = 0; b < (p-1); ++b) {
+      mpfr_out_str(output, 10, 0, mpc_realref(V[a*(p-1)+b]), MPFR_RNDN);
       fprintf(output, "+(");
-      mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-2)+b]), MPFR_RNDN);
+      mpfr_out_str(output, 10, 0, mpc_imagref(V[a*(p-1)+b]), MPFR_RNDN);
       fprintf(output, "I)");
       if (b < p-3) fprintf(output, ",");
     }
@@ -221,13 +197,13 @@ void pCharSum(const unsigned long primeIndex,
   mpc_init2(zeta, 64);
   assignZeta(zeta, p);
 
-  mpc_t lambdaChiV[lambdaLength*(p-2)];
-  fillV(lambdaLength, p, zeta, lambdas, logtable, lambdaChiV);
-  print2DV(lambdaLength, p, lambdaChiV);
+  mpc_t lambdaPsiV[lambdaLength*(p-1)];
+  fillV(lambdaLength, p, zeta, lambdas, logtable, lambdaPsiV);
+  print2DV(lambdaLength, p, lambdaPsiV);
   
   // cleanup
   mpc_clear(zeta);
-  clear2DV(lambdaLength*(p-2), lambdaChiV);
+  clear2DV(lambdaLength*(p-1), lambdaPsiV);
   return;
 }
 
