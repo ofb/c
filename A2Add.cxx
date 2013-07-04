@@ -89,7 +89,6 @@ void fillV(const unsigned int lambdaLength,
 	   unsigned long p,
 	   mpc_t &zeta,
 	   const unsigned int lambdas[],
-	   unsigned long logtable[],
 	   mpc_t evalV[]) {
   mpc_t primZetaEval[p];
   for (unsigned long n = 0; n < p; ++n) {
@@ -109,12 +108,12 @@ void fillV(const unsigned int lambdaLength,
   }
 
   // Remember: the additive characters form a group of order p.
-  // log needs mod p; char exponent needs mod p.
+  // zeta exponent needs mod p.
   // lambdas account for a shift in the evaluation,
   // as does the choice of psi. Since the psis form
   // a multiplicative group, we only need to evaluate
   // a primitive root to get the data for all of them.
-#pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
+#pragma omp parallel for schedule(static) shared(lambdas, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     ull psiArg, psiArgLambda, p1ull, p2ull;
     unsigned long zetaPower;
@@ -190,15 +189,13 @@ void pCharSum(const unsigned long primeIndex,
   unsigned long p;
   for (unsigned long i = 0; i < primeIndex; ++i)
     p = s.next();
-  unsigned long logtable[p-1];
-  getLogs(p, logtable);
   
   mpc_t zeta;
   mpc_init2(zeta, 64);
   assignZeta(zeta, p);
 
   mpc_t lambdaPsiV[lambdaLength*(p-1)];
-  fillV(lambdaLength, p, zeta, lambdas, logtable, lambdaPsiV);
+  fillV(lambdaLength, p, zeta, lambdas, lambdaPsiV);
   print2DV(lambdaLength, p, lambdaPsiV);
   
   // cleanup
