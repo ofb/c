@@ -17,7 +17,7 @@ date
 cd /work/obarrett
 mkdir -p matho
 
-math -script chi_bound.m
+math -script mathematica.m
 
 date
 
