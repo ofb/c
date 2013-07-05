@@ -1,7 +1,7 @@
 #!/usr/local/bin/MathematicaScript -script
 
 # SetDirectory["."]
-l=ReadList["f20"][[1]];
+l=ReadList["catted"][[1]];
 length=Length[l]
 
 mag=l;
