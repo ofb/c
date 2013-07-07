@@ -222,7 +222,7 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf (output_filename, "A2MultOut/a2mult%06lu", p);
+  sprintf (output_filename, "G2MultOut/a2mult%06lu", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);
