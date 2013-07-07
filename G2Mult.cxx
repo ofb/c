@@ -202,19 +202,20 @@ void fillV(const unsigned int lambdaLength,
 	}
       }
     }
+    mpz_clear(logArg);
+    mpz_clear(logArgLambda);
+    mpz_clear(chiArg);
+    for (int i = 0; i < 6; ++i)
+      mpz_clear(p1big[i]);
+    for (int i = 0; i < 4; ++i)
+      mpz_clear(p1big[i]);
   }
 
   // clean up
   for (unsigned long n = 0; n < p; ++n) {
     mpc_clear(primZetaEval[n]);
   }
-  mpz_clear(logArg);
-  mpz_clear(logArgLambda);
-  mpz_clear(chiArg);
-  for (int i = 0; i < 6, ++i)
-    mpz_clear(p1big[i]);
-  for (int i = 0; i < 4, ++i)
-    mpz_clear(p1big[i]);
+  
   return;
 }
 
