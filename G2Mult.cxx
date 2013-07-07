@@ -46,7 +46,7 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "where index is the index of the prime you wish to start at, "
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"
-	   << "you wish to run.\n"
+	   << "you wish to run.\n";
       return make_pair(0, 0);
     }
   
