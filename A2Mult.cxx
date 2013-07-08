@@ -135,29 +135,29 @@ void fillV(const unsigned int lambdaLength,
   // a primitive root to get the data for all of them.
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    ull logArg, logArgLambda, p1ull, p2ull;
-    unsigned long chiArg;
+    ull chiArg, chiArgLambda, p1ull, p2ull;
+    unsigned long zetaPower;
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
       // our polynomial is p1+p2+p1^2*p2+p1*p2^2+p1^2*p2^2+1+lambda*p1*p2
       // = p1+p2+(p1+p2)*p1*p2+p1*p2*p1*p2+1+lambda*p1*p2
-      logArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull+1) % (ull) p;
+      chiArg = (p1ull+p2ull+(p1ull+p2ull)*p1ull*p2ull+p1ull*p1ull*p2ull*p2ull+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
-	logArgLambda = (logArg + ((ull) lambdas[l])*p1ull*p2ull) % (ull) p;
-	if (!logArgLambda) continue;
+	chiArgLambda = (chiArg + ((ull) lambdas[l])*p1ull*p2ull) % (ull) p;
+	if (!chiArgLambda) continue;
         for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  chiArg = ((ull) c)*((ull) logtable[logArgLambda-1]) % (ull) (p-1);
+	  zetaPower = ((ull) c)*((ull) logtable[chiArgLambda-1]) % (ull) (p-1);
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[chiArg], MPFR_RNDN);
+		    primZetaEval[zetaPower], MPFR_RNDN);
 	  }
 	}
       }

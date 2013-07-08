@@ -131,12 +131,12 @@ void fillV(const unsigned int lambdaLength,
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
     ull logLookup;
-    mpz_t logArg, logArgLambda, chiArg;
+    mpz_t chiArg, chiArgLambda, zetaPower;
     mpz_t p1big[6]; // to store powers of p1
     mpz_t p2big[4]; // to store powers of p2
-    mpz_init(logArg);
-    mpz_init(logArgLambda);
     mpz_init(chiArg);
+    mpz_init(chiArgLambda);
+    mpz_init(zetaPower);
     mpz_init_set_ui(p1big[0], p1);
     for (int i = 1; i < 6; ++i) {
       mpz_init(p1big[i]);
@@ -148,63 +148,63 @@ void fillV(const unsigned int lambdaLength,
       mpz_set_ui(p2big[0], p2);
       for (int i = 1; i < 4; ++i)
 	mpz_mul(p2big[i], p2big[0], p2big[i-1]);
-      mpz_set_ui(logArg, 0);
+      mpz_set_ui(chiArg, 0);
       // our polynomial is 1+y+xy+x^2y+x^3y+x^2y^2+lambdax^3y^2+x^4y^2+x^3y^3+x^4y^3+x^5y^3+x^6y^3+x^6y^4
       // the way the indices of the p1big and p2big arrays work, p1^i = p1big[i-1].
-      mpz_add_ui(logArg, logArg, 1);
-      mpz_add(logArg, logArg, p2big[0]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[0], p2big[0]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[1], p2big[0]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[2], p2big[0]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[1], p2big[1]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[3], p2big[1]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[2], p2big[2]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[3], p2big[2]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[4], p2big[2]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[5], p2big[2]);
-      mpz_mod_ui(logArg, logArg, p);
-      mpz_addmul(logArg, p1big[5], p2big[3]);
-      mpz_mod_ui(logArg, logArg, p);
+      mpz_add_ui(chiArg, chiArg, 1);
+      mpz_add(chiArg, chiArg, p2big[0]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[0], p2big[0]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[1], p2big[0]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[2], p2big[0]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[1], p2big[1]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[3], p2big[1]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[2], p2big[2]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[3], p2big[2]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[4], p2big[2]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[5], p2big[2]);
+      mpz_mod_ui(chiArg, chiArg, p);
+      mpz_addmul(chiArg, p1big[5], p2big[3]);
+      mpz_mod_ui(chiArg, chiArg, p);
       for (unsigned int l = 0; l < lambdaLength; ++l) {
-	mpz_set_ui(logArgLambda, 0);
-	mpz_set_ui(chiArg, 0);
-	mpz_mul(logArgLambda, p1big[2], p2big[1]);
-	mpz_mul_ui(logArgLambda, logArgLambda, lambdas[l]);
-	mpz_add(logArgLambda, logArg, logArgLambda);
-	mpz_mod_ui(logArgLambda, logArgLambda, p);
-	if (!mpz_sgn(logArgLambda)) continue;
-	logLookup = logtable[mpz_get_ui(logArgLambda)-1];
+	mpz_set_ui(chiArgLambda, 0);
+	mpz_set_ui(zetaPower, 0);
+	mpz_mul(chiArgLambda, p1big[2], p2big[1]);
+	mpz_mul_ui(chiArgLambda, chiArgLambda, lambdas[l]);
+	mpz_add(chiArgLambda, chiArg, chiArgLambda);
+	mpz_mod_ui(chiArgLambda, chiArgLambda, p);
+	if (!mpz_sgn(chiArgLambda)) continue;
+	logLookup = logtable[mpz_get_ui(chiArgLambda)-1];
         for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  mpz_set_ui(chiArg, logLookup);
-	  mpz_mul_ui(chiArg, chiArg, c);
+	  mpz_set_ui(zetaPower, logLookup);
+	  mpz_mul_ui(zetaPower, zetaPower, c);
 	  // Remember that zeta is a (p-1)th root of unity
-	  mpz_mod_ui(chiArg, chiArg, p-1);
+	  mpz_mod_ui(zetaPower, zetaPower, p-1);
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[mpz_get_ui(chiArg)], MPFR_RNDN);
+		    primZetaEval[mpz_get_ui(zetaPower)], MPFR_RNDN);
 	  }
 	}
       }
     }
-    mpz_clear(logArg);
-    mpz_clear(logArgLambda);
     mpz_clear(chiArg);
+    mpz_clear(chiArgLambda);
+    mpz_clear(zetaPower);
     for (int i = 0; i < 6; ++i)
       mpz_clear(p1big[i]);
     for (int i = 0; i < 4; ++i)

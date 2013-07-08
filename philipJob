@@ -22,6 +22,7 @@ cd /work/obarrett
 # mkdir -p A2MultOut
 # mkdir -p A2AddOut
 # mkdir -p G2MultOut
+# mkdir -p G2AddOut
 
 cat $PBS_NODEFILE > hosts
 cat $PBS_NODEFILE | uniq > uniqhosts
@@ -34,6 +35,7 @@ let np=2*nodes
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/A2Mult 2 32 0 1 2 3
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/A2Add 2 32 0 1 2 3
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/G2Mult 2 32 0 1 4
+# mpirun -np $np -hostfile uniqhosts /work/obarrett/G2Add 2 32 0 1 4
 
 date
 
