@@ -158,7 +158,6 @@ void fillV(const unsigned int lambdaLength,
 	mpz_mul_ui(psiArgLambda, psiArgLambda, lambdas[l]);
 	mpz_add(psiArgLambda, psiArg, psiArgLambda);
 	mpz_mod_ui(psiArgLambda, psiArgLambda, p);
-	if (!mpz_sgn(psiArgLambda)) continue;
 	// disregard the trivial character where c = 0 or p
         for (unsigned long c = 1; c < p; ++c) {
 	  // Remember, additive characters form a multiplicative group of order p.
