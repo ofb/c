@@ -159,10 +159,10 @@ void fillV(const unsigned int lambdaLength,
 	mpz_add(psiArgLambda, psiArg, psiArgLambda);
 	mpz_mod_ui(psiArgLambda, psiArgLambda, p);
 	if (!mpz_sgn(psiArgLambda)) continue;
-	logLookup = logtable[mpz_get_ui(psiArgLambda)-1];
 	// disregard the trivial character where c = 0 or p
         for (unsigned long c = 1; c < p; ++c) {
 	  // Remember, additive characters form a multiplicative group of order p.
+	  mpz_set(zetaPower, psiArgLambda);
 	  mpz_mul_ui(zetaPower, zetaPower, c);
 	  // Remember that zeta is a (p-1)th root of unity
 	  mpz_mod_ui(zetaPower, zetaPower, p);
