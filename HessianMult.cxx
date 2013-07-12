@@ -12,6 +12,7 @@
 #define MAX_PRIME_INDEX 50000
 
 typedef unsigned long long ull;
+typedef long long ll;
 
 using namespace std;
 using namespace NTL;
@@ -135,27 +136,26 @@ void fillV(const unsigned int lambdaLength,
   // a primitive root to get the data for all of them.
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    ull chiArg, p1ull, p2ull;
-    long long chiArgLambda;
+    ll chiArg, chiArgLambda, p1ll, p2ll;
     unsigned long zetaPower;
-    p1ull = (ull) p1;
+    p1ll = (ll) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
-      p2ull = (ull) p2;
+      p2ll = (ll) p2;
       // our polynomial is p1^3+p2^3+1-3*lambda*p1*p2
-      chiArg = (p1ull*p1ull*p1ull+p2ull*p2ull*p2ull+1) % (ull) p;
+      chiArg = (p1ll*p1ll*p1ll+p2ll*p2ll*p2ll+1) % (ll) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
-	chiArgLambda = (chiArg - ((long long) 3*lambdas[l])*p1ull*p2ull) % (long long) p;
+	chiArgLambda = (chiArg - ((ll) 3*lambdas[l])*p1ll*p2ll) % (ll) p;
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (chiArgLambda < 0)
-	  chiArgLambda += (ull) p;
+	  chiArgLambda += (ll) p;
 	if (!chiArgLambda) continue;
         for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
 	  // Remember that the logtable index is given by the element of
 	  // the group that of which you want the log minus one.
-	  zetaPower = ((ull) c)*((ull) logtable[chiArgLambda-1]) % (ull) (p-1);
+	  zetaPower = ((ll) c)*((ll) logtable[chiArgLambda-1]) % (ll) (p-1);
 	  // We look up the evaluation of chi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
