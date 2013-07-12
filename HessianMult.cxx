@@ -141,7 +141,8 @@ void fillV(const unsigned int lambdaLength,
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
       // our polynomial is p1^3+p2^3+1-3*lambda*p1*p2
-      chiArg = (p1^3+p2^3+1) % (ull) p;
+      chiArg = (p1ull^3+p2ull^3+1) % (ull) p;
+      printf("p1ull = %lu, p2ull = %lu, chiArg = %lu\n", p1ull, p2ull, chiArg);
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
 	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull) % (ull) p;
@@ -160,7 +161,6 @@ void fillV(const unsigned int lambdaLength,
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
-	    cout << "--------------------";
 	    printf("p1 = %lu, p2 = %lu, lambda = %u, c = %lu\n", p1ull, p2ull, lambdas[l], c);
 	    printf("chiArg = %lu, chiArgLambda = %lu, logtable[*] = %lu\n", chiArg, chiArgLambda, logtable[chiArgLambda-1]);
 	    cout << "primZetaEval[" << zetaPower << "] = ";
