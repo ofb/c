@@ -141,7 +141,7 @@ void fillV(const unsigned int lambdaLength,
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
       // our polynomial is p1^3+p2^3-3*lambda*p1*p2
-      chiArg = (p1^3+p2^3) % (ull) p;
+      chiArg = (p1^3+p2^3+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
 	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull);
