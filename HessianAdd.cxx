@@ -120,7 +120,7 @@ void fillV(const unsigned int lambdaLength,
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
-      // our polynomial is p1^3+p2^3-3*lambda*p1*p2
+      // our polynomial is p1^3+p2^3+1-3*lambda*p1*p2
       psiArg = (p1^3+p2^3+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	psiArgLambda = (psiArg - ((ull) 3*lambdas[l])*p1ull*p2ull);

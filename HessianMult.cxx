@@ -140,15 +140,15 @@ void fillV(const unsigned int lambdaLength,
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       p2ull = (ull) p2;
-      // our polynomial is p1^3+p2^3-3*lambda*p1*p2
+      // our polynomial is p1^3+p2^3+1-3*lambda*p1*p2
       chiArg = (p1^3+p2^3+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
-	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull);
+	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull) % (ull) (p-1);
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (chiArgLambda < 0)
-	  chiArgLambda += (ull) p;
+	  chiArgLambda += (ull) (p-1);
 	if (!chiArgLambda) continue;
         for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
