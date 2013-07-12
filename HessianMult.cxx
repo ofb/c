@@ -145,7 +145,7 @@ void fillV(const unsigned int lambdaLength,
       chiArg = (p1ull*p1ull*p1ull+p2ull*p2ull*p2ull+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
-	chiArgLambda = (chiArg - ((ll) 3*lambdas[l])*p1ull*p2ull) % (ll) p;
+	chiArgLambda = (chiArg - ((long long) 3*lambdas[l])*p1ull*p2ull) % (ll) p;
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (chiArgLambda < 0)
