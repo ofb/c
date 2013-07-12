@@ -160,6 +160,11 @@ void fillV(const unsigned int lambdaLength,
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
+	    if (c == 1) {
+	      cout << "primZetaEval[" << zetaPower << "] = ";
+	      mpfr_out_str(output, 10, 0, primZetaEval[zetaPower], MPFR_RNDN);
+	      cout << endl;
+	    }
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
 		    primZetaEval[zetaPower], MPFR_RNDN);
 	  }
