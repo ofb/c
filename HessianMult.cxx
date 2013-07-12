@@ -144,11 +144,11 @@ void fillV(const unsigned int lambdaLength,
       chiArg = (p1^3+p2^3+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
-	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull) % (ull) (p-1);
+	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull) % (ull) p;
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (chiArgLambda < 0)
-	  chiArgLambda += (ull) (p-1);
+	  chiArgLambda += (ull) p;
 	if (!chiArgLambda) continue;
         for (unsigned long c = 1; c < p-1; ++c) {
 	  // We find n*Log(a+lambda).
