@@ -16,7 +16,7 @@ date
 dataDir=PolCharOut
 # put output in our work directory
 cd /work/obarrett
-(echo "{"; for each in dataDir/*; do cat $each; echo ","; done) > temp
+(echo "{"; for each in $dataDir/*; do cat $each; echo ","; done) > temp
 sed -i '$s/,$/\}/' temp
 sed -i 's/e/\*10\^/g' temp
 
