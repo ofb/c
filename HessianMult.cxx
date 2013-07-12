@@ -135,7 +135,8 @@ void fillV(const unsigned int lambdaLength,
   // a primitive root to get the data for all of them.
 #pragma omp parallel for schedule(static) shared(lambdas, logtable, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    ull chiArg, chiArgLambda, p1ull, p2ull;
+    ull chiArg, p1ull, p2ull;
+    long long chiArgLambda;
     unsigned long zetaPower;
     p1ull = (ull) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
@@ -144,7 +145,7 @@ void fillV(const unsigned int lambdaLength,
       chiArg = (p1ull*p1ull*p1ull+p2ull*p2ull*p2ull+1) % (ull) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
 	// this will always be in {1,...,p-1} unless it's negative
-	chiArgLambda = (chiArg - ((ull) 3*lambdas[l])*p1ull*p2ull) % (ull) p;
+	chiArgLambda = (chiArg - ((ll) 3*lambdas[l])*p1ull*p2ull) % (ll) p;
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (chiArgLambda < 0)
@@ -160,11 +161,6 @@ void fillV(const unsigned int lambdaLength,
 	  // zeta^n is in the nth spot.	  
 	  #pragma omp critical (summing)
 	  {
-	    if (c == 1) {
-	      cout << "primZetaEval[" << zetaPower << "] = ";
-	      mpfr_out_str(output, 10, 0, primZetaEval[zetaPower], MPFR_RNDN);
-	      cout << endl;
-	    }
 	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
 		    primZetaEval[zetaPower], MPFR_RNDN);
 	  }
