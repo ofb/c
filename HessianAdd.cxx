@@ -12,6 +12,7 @@
 #define MAX_PRIME_INDEX 50000
 
 typedef unsigned long long ull;
+typedef long long ll;
 
 using namespace std;
 using namespace NTL;
@@ -115,23 +116,23 @@ void fillV(const unsigned int lambdaLength,
   // a primitive root to get the data for all of them.
 #pragma omp parallel for schedule(static) shared(lambdas, p, evalV, primZetaEval)
   for (unsigned long p1 = 0; p1 < p; ++p1) {
-    ull psiArg, psiArgLambda, p1ull, p2ull;
+    ll psiArg, psiArgLambda, p1ll, p2ll;
     unsigned long zetaPower;
-    p1ull = (ull) p1;
+    p1ll = (ll) p1;
     for (unsigned long p2 = 0; p2 < p; ++p2) {
-      p2ull = (ull) p2;
+      p2ll = (ll) p2;
       // our polynomial is p1^3+p2^3+1-3*lambda*p1*p2
-      psiArg = (p1ull*p1ull*p1ull+p2ull*p2ull*p2ull+1) % (ull) p;
+      psiArg = (p1ll*p1ll*p1ll+p2ll*p2ll*p2ll+1) % (ll) p;
       for (unsigned int l = 0; l < lambdaLength; ++l) {
-	psiArgLambda = (psiArg - ((ull) 3*lambdas[l])*p1ull*p2ull);
+	psiArgLambda = (psiArg - ((ll) 3*lambdas[l])*p1ll*p2ll);
 	// unfortunately, c++ modulus will return a negative value, so we
 	// have to do the following:
 	while (psiArgLambda < 0)
-	  psiArgLambda += (ull) p;
+	  psiArgLambda += (ll) p;
 	// disregard the trivial character where c = 0 or p
         for (unsigned long c = 1; c < p; ++c) {
 	  // Remember, additive characters form a multiplicative group of order p.
-	  zetaPower = ((ull) c)*((ull) psiArgLambda) % (ull) p;
+	  zetaPower = ((ll) c)*((ll) psiArgLambda) % (ll) p;
 	  // We look up the evaluation of psi at this point.
 	  // the primZetaEval array is actually canonically indexed; i.e.
 	  // zeta^n is in the nth spot.	  
