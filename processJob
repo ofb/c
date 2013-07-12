@@ -23,7 +23,7 @@ sed -i 's/e/\*10\^/g' temp
 mkdir -p matho
 
 math -script mathematica.m
-
+rm temp
 gnuplot mathPlot.gnuplot
 
 date
