@@ -67,7 +67,7 @@ void print(double *tr, double *prob, const uint hRes) {
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{");
-  for (uint a = 0; a < hRes, ++a) {
+  for (uint a = 0; a < hRes; ++a) {
     fprintf(output, "{%f,%f}", tr[a], prob[a]);
     if (a < (hRes-1)) fprintf(output, ",");
   }
