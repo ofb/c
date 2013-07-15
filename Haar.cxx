@@ -50,10 +50,11 @@ double haar(double theta1) { return sin(theta1)*sin(theta1); }
 
 void pushforward(double *tr, double *prob, const uint hRes) {
   double binwidth = 2*M_PI/hRes;
-  // we are going to interate over hRes^2 bins of [0,2pi]^2
 #pragma omp parallel for schedule(static) shared(tr, prob, hRes)
   for (uint xbin = 0; xbin < hRes; ++xbin) {
-    double theta1 = (xbin+0.5)*2*M_PI/hRes; // our point in theta space
+    // NOTE: For n=2 our interval is [0, Pi]
+    //       For n=3 our interval is [0,2Pi]^2
+    double theta1 = (xbin+0.5)*M_PI/hRes; // our point in theta space
     tr[xbin] = trace(theta1);
     prob[xbin] = haar(theta1);
   }
