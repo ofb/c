@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <cstdio>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -25,7 +26,7 @@ void print(double *tr, double *prob, const uint hRes);
 uint validateParams(int argc, char *argv[]) {
   uint hRes;
   if (argc == 2) {
-    hRes = argv[1];
+    hRes = atoi(argv[1]);
     if (hRes < 1) {
       cout << "Please enter a natural number for the resolution.\n";
       return 0;
@@ -44,15 +45,15 @@ uint validateParams(int argc, char *argv[]) {
   return hRes;
 }
 
-double trace(double theta1) return 2*cos(theta1);
-double haar(double theta1) return sin(theta1)*sin(theta1);
+double trace(double theta1) { return 2*cos(theta1); }
+double haar(double theta1) { return sin(theta1)*sin(theta1); }
 
 void pushforward(double *tr, double *prob, const uint hRes) {
   double binwidth = 2*M_PI/hRes;
   // we are going to interate over hRes^2 bins of [0,2pi]^2
-#pragma omp parallel for schedule(static) shared(tr, prob)
+#pragma omp parallel for schedule(static) shared(tr, prob, hRes)
   for (uint xbin = 0; xbin < hRes; ++xbin) {
-    double theta1 = (xbin+0.5)*2*M_Pi/hRes; // our point in theta space
+    double theta1 = (xbin+0.5)*2*M_PI/hRes; // our point in theta space
     tr[xbin] = trace(theta1);
     prob[xbin] = haar(theta1);
   }
