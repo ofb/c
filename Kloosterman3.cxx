@@ -123,7 +123,7 @@ void fillV(unsigned long p,
 void printSum(unsigned long p, mpc_t V) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf (output_filename, "Kloosterman3/kloos%06lu", p);
+  sprintf (output_filename, "Kloosterman3Out/kloos%06lu", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);
