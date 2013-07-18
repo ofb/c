@@ -147,12 +147,13 @@ void pCharSum(const unsigned long primeIndex) {
   mpc_t zeta;
   mpc_init2(zeta, 64);
   assignZeta(zeta, p);
-
+  
+  mpc_t sum;
   fillV(p, zeta, sum);
   printSum(p, sum);
   
   // cleanup
-  mpc_clear(sum)
+  mpc_clear(sum);
   mpc_clear(zeta);
   return;
 }
