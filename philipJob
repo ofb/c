@@ -25,7 +25,7 @@ cd /work/obarrett
 # mkdir -p G2AddOut
 # mkdir -p HessianMultOut
 # mkdir -p HessianAddOut
-# mkdir -p Kloosterman3
+# mkdir -p Kloosterman3Out
 
 cat $PBS_NODEFILE > hosts
 cat $PBS_NODEFILE | uniq > uniqhosts
