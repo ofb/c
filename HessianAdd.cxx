@@ -45,7 +45,7 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
     }
   else
     {
-      cout << "Please call this program like \'char index iterations lambda1 lambda2...\' "
+      cout << "Please call this program like \'HessianAdd index iterations lambda1 lambda2...\' "
 	   << "where index is the index of the prime you wish to start at, "
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"

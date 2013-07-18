@@ -44,13 +44,13 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
     }
   else
     {
-      cout << "Please call this program like \'char index iterations lambda1 lambda2...\' "
+      cout << "Please call this program like \'A2Mult index iterations lambda1 lambda2...\' "
 	   << "where index is the index of the prime you wish to start at, "
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"
 	   << "you wish to run.\n"
-	   << "Calculations in this program overflow for a prime > 62,000,"
-	   << "so please choose a value for the prime index <= 6,232.\n";
+	   << "Calculations in this program overflow for a prime > " << MAX_PRIME_INDEX << ","
+	   << "so please choose a value for the prime index <= " << MAX_PRIME_INDEX << ".\n";
       return make_pair(0, 0);
     }
   if (primeIndex + iterationCount > MAX_PRIME_INDEX) {
