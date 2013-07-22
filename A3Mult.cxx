@@ -152,7 +152,7 @@ void fillV(const unsigned int lambdaLength,
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       mpz_set_ui(p2big[0], p2);
       mpz_mul(p2big[1], p2big[0], p2big[0]);
-      for (unsigned long p3 = 0; p3 < p, ++p3) {
+      for (unsigned long p3 = 0; p3 < p; ++p3) {
 	mpz_set_ui(p1p2p3big, (((ull) p1*p2*p3) % ((ull) p)) );
         mpz_set_ui(p2big[0], p2);
         mpz_mul(p2big[1], p2big[0], p2big[0]);
