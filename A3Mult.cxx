@@ -174,40 +174,40 @@ void fillV(const unsigned int lambdaLength,
 	mpz_addmul(temp, p2big[1], p3big[1]);
         mpz_addmul(chiArg, p1big[0], temp);
         mpz_mod_ui(chiArg, chiArg, p);
-      mpz_addmul(chiArg, p1big[2], p2big[2]);
-      mpz_mod_ui(chiArg, chiArg, p);
-      mpz_addmul(chiArg, p1big[3], p2big[2]);
-      mpz_mod_ui(chiArg, chiArg, p);
-      mpz_addmul(chiArg, p1big[4], p2big[2]);
-      mpz_mod_ui(chiArg, chiArg, p);
-      mpz_addmul(chiArg, p1big[5], p2big[2]);
-      mpz_mod_ui(chiArg, chiArg, p);
-      mpz_addmul(chiArg, p1big[5], p2big[3]);
-      mpz_mod_ui(chiArg, chiArg, p);
-      for (unsigned int l = 0; l < lambdaLength; ++l) {
-	mpz_set_ui(chiArgLambda, 0);
-	mpz_set_ui(zetaPower, 0);
-	mpz_mul(chiArgLambda, p1big[2], p2big[1]);
-	mpz_mul_ui(chiArgLambda, chiArgLambda, lambdas[l]);
-	mpz_add(chiArgLambda, chiArg, chiArgLambda);
-	mpz_mod_ui(chiArgLambda, chiArgLambda, p);
-	if (!mpz_sgn(chiArgLambda)) continue;
-	logLookup = logtable[mpz_get_ui(chiArgLambda)-1];
-        for (unsigned long c = 1; c < p-1; ++c) {
-	  // We find n*Log(a+lambda).
-	  // Remember that the logtable index is given by the element of
-	  // the group that of which you want the log minus one.
-	  mpz_set_ui(zetaPower, logLookup);
-	  mpz_mul_ui(zetaPower, zetaPower, c);
-	  // Remember that zeta is a (p-1)th root of unity
-	  mpz_mod_ui(zetaPower, zetaPower, p-1);
-	  // We look up the evaluation of chi at this point.
-	  // the primZetaEval array is actually canonically indexed; i.e.
-	  // zeta^n is in the nth spot.	  
-	  #pragma omp critical (summing)
-	  {
-	    mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
-		    primZetaEval[mpz_get_ui(zetaPower)], MPFR_RNDN);
+        mpz_add(chiArg, chiArg, p3big[0]);
+        mpz_mod_ui(chiArg, chiArg, p);
+        mpz_addmul(chiArg, p1big[0], p3big[0]);
+        mpz_mod_ui(chiArg, chiArg, p);
+        mpz_addmul(chiArg, p3big[1], p1p2p3big);
+        mpz_mod_ui(chiArg, chiArg, p);
+        mpz_add(chiArg, chiArg, p1big[0]);
+        mpz_mod_ui(chiArg, chiArg, p);
+        mpz_addmul(chiArg, p1big[0], p2big[0]);
+        mpz_mod_ui(chiArg, chiArg, p);
+        for (unsigned int l = 0; l < lambdaLength; ++l) {
+	  mpz_set_ui(chiArgLambda, 0);
+  	  mpz_set_ui(zetaPower, 0);
+  	  mpz_mul_ui(chiArgLambda, p1p2p3big, lambdas[l]);
+	  mpz_add(chiArgLambda, chiArg, chiArgLambda);
+	  mpz_mod_ui(chiArgLambda, chiArgLambda, p);
+	  if (!mpz_sgn(chiArgLambda)) continue;
+	  logLookup = logtable[mpz_get_ui(chiArgLambda)-1];
+	  for (unsigned long c = 1; c < p-1; ++c) {
+	    // We find n*Log(a+lambda).
+	    // Remember that the logtable index is given by the element of
+	    // the group that of which you want the log minus one.
+	    mpz_set_ui(zetaPower, logLookup);
+	    mpz_mul_ui(zetaPower, zetaPower, c);
+	    // Remember that zeta is a (p-1)th root of unity
+	    mpz_mod_ui(zetaPower, zetaPower, p-1);
+	    // We look up the evaluation of chi at this point.
+	    // the primZetaEval array is actually canonically indexed; i.e.
+	    // zeta^n is in the nth spot.	  
+#pragma omp critical (summing)
+	    {
+	      mpc_add(evalV[(p-2)*l+(c-1)], evalV[(p-2)*l+(c-1)],
+		      primZetaEval[mpz_get_ui(zetaPower)], MPFR_RNDN);
+	    }
 	  }
 	}
       }
@@ -215,10 +215,13 @@ void fillV(const unsigned int lambdaLength,
     mpz_clear(chiArg);
     mpz_clear(chiArgLambda);
     mpz_clear(zetaPower);
-    for (int i = 0; i < 6; ++i)
+    mpz_clear(temp);
+    mpz_clear(p1p2p3big);
+    for (int i = 0; i < 2; ++i) {
       mpz_clear(p1big[i]);
-    for (int i = 0; i < 4; ++i)
       mpz_clear(p2big[i]);
+      mpz_clear(p3big[i]);
+    }
   }
 
   // clean up
@@ -232,7 +235,7 @@ void fillV(const unsigned int lambdaLength,
 void print2DV(const unsigned int lambdaLength, unsigned long p, mpc_t V[]) {
   FILE *output;
   char output_filename[ 32 ];
-  sprintf (output_filename, "G2MultOut/g2mult%06lu", p);
+  sprintf (output_filename, "A3MultOut/a3mult%06lu", p);
   output = fopen ( output_filename, "w" );
 
   fprintf(output, "{{%lu},{", p);

@@ -17,6 +17,8 @@ OUTPUT_HasseA = -o $(EXECUTABLE_HasseA)
 EXECUTABLE_HasseA = HessianAdd
 OUTPUT_K3 = -o $(EXECUTABLE_K3)
 EXECUTABLE_K3 = Kloosterman3
+OUTPUT_A3M = -o $(EXECUTABLE_A3M)
+EXECUTABLE_A3M = A3Mult
 RUNTIME_LIB = -Wl,-rpath=$(HOME)/sw/lib
 OPENMP = -openmp
 
@@ -29,6 +31,7 @@ default:
 	$(CC) $(INCLUDE) HessianMult.cxx $(OUTPUT_HasseM) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) $(OPENMP)
 	$(CC) $(INCLUDE) HessianAdd.cxx $(OUTPUT_HasseA) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) $(OPENMP)
 	$(CC) $(INCLUDE) Kloosterman3.cxx $(OUTPUT_K3) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) $(OPENMP)
+	$(CC) $(INCLUDE) A3Mult.cxx $(OUTPUT_A3M) $(LDFLAGS) $(LIB) $(RUNTIME_LIB) $(OPENMP)
 
 clean:
 	rm $(EXECUTABLE_A2M)
@@ -38,3 +41,4 @@ clean:
 	rm $(EXECUTABLE_HasseM)
 	rm $(EXECUTABLE_HasseA)
 	rm $(EXECUTABLE_K3)
+	rm $(EXECUTABLE_A3M)
