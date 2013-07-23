@@ -157,12 +157,14 @@ void fillV(const unsigned int lambdaLength,
         mpz_set_ui(p2big[0], p2);
         mpz_mul(p2big[1], p2big[0], p2big[0]);
         mpz_set_ui(chiArg, 0);
-        // our polynomial is 1 + x^2*y*z + x^2*y^2 + x^2*y^2*z^2 + y*z + x*y^2*z + x*y^2*z^2 + z + x*z + x*y*z^2 + x + x*y + lambda*x*y*z
+        // our polynomial is 1 + x^2*y*z + x^2*y^2*z + x^2*y^2*z^2 + y*z + x*y^2*z + x*y^2*z^2 + z + x*z + x*y*z^2 + x + x*y + lambda*x*y*z
         // the way the indices of the pibig arrays work, pi^i = pibig[i-1].
         mpz_add_ui(chiArg, chiArg, 1);
         mpz_addmul(chiArg, p1big[0], p1p2p3big);
         mpz_mod_ui(chiArg, chiArg, p);
-        mpz_addmul(chiArg, p1big[1], p2big[1]);
+	mpz_set_ui(temp, 0);
+	mpz_addmul(temp, p1big[1], p2big[1]);
+        mpz_addmul(chiArg, temp, p3big[0]);
         mpz_mod_ui(chiArg, chiArg, p);
         mpz_addmul(chiArg, p1p2p3big, p1p2p3big);
         mpz_mod_ui(chiArg, chiArg, p);
