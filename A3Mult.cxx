@@ -154,8 +154,8 @@ void fillV(const unsigned int lambdaLength,
       mpz_mul(p2big[1], p2big[0], p2big[0]);
       for (unsigned long p3 = 0; p3 < p; ++p3) {
 	mpz_set_ui(p1p2p3big, (((ull) p1*p2*p3) % ((ull) p)) );
-        mpz_set_ui(p2big[0], p2);
-        mpz_mul(p2big[1], p2big[0], p2big[0]);
+        mpz_set_ui(p3big[0], p3);
+        mpz_mul(p3big[1], p3big[0], p3big[0]);
         mpz_set_ui(chiArg, 0);
         // our polynomial is 1 + x^2*y*z + x^2*y^2*z + x^2*y^2*z^2 + y*z + x*y^2*z + x*y^2*z^2 + z + x*z + x*y*z^2 + x + x*y + lambda*x*y*z
         // the way the indices of the pibig arrays work, pi^i = pibig[i-1].
@@ -180,7 +180,7 @@ void fillV(const unsigned int lambdaLength,
         mpz_mod_ui(chiArg, chiArg, p);
         mpz_addmul(chiArg, p1big[0], p3big[0]);
         mpz_mod_ui(chiArg, chiArg, p);
-        mpz_addmul(chiArg, p3big[1], p1p2p3big);
+        mpz_addmul(chiArg, p3big[0], p1p2p3big);
         mpz_mod_ui(chiArg, chiArg, p);
         mpz_add(chiArg, chiArg, p1big[0]);
         mpz_mod_ui(chiArg, chiArg, p);
