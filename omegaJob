@@ -16,7 +16,7 @@
 date
 
 # put output in our work directory
-cd /home/fas/sherman/ofb/c
+cd /home/fas/sherman/ofb3/c
 # Depending on the program called
 # mkdir -p A2MultOut
 # mkdir -p A2AddOut
@@ -30,14 +30,14 @@ cd /home/fas/sherman/ofb/c
 export OMP_NUM_THREADS=8
 
 # Depending on the program called
-# mpirun -pernode /home/fas/sherman/ofb/c/A2Mult 2 32 0 1 2 3
-# mpirun -pernode /home/fas/sherman/ofb/c/A2Add 2 32 0 1 2 3
-# mpirun -pernode /home/fas/sherman/ofb/c/G2Mult 2 32 0 1 4
-# mpirun -pernode /home/fas/sherman/ofb/c/G2Add 2 32 0 1 4
-# mpirun -pernode /home/fas/sherman/ofb/c/HessianMult 2 32 0 1 2
-# mpirun -pernode /home/fas/sherman/ofb/c/HessianAdd 2 32 0 1 2
-# mpirun -pernode /home/fas/sherman/ofb/c/Kloosterman3 2 32
-# mpirun -pernode /home/fas/sherman/ofb/c/A3Mult 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb3/c/A2Mult 2 32 0 1 2 3
+# mpirun -pernode /home/fas/sherman/ofb3/c/A2Add 2 32 0 1 2 3
+# mpirun -pernode /home/fas/sherman/ofb3/c/G2Mult 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb3/c/G2Add 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb3/c/HessianMult 2 32 0 1 2
+# mpirun -pernode /home/fas/sherman/ofb3/c/HessianAdd 2 32 0 1 2
+# mpirun -pernode /home/fas/sherman/ofb3/c/Kloosterman3 2 32
+# mpirun -pernode /home/fas/sherman/ofb3/c/A3Mult 2 32 0 1 4
 
 date
 
