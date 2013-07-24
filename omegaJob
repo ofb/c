@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# script for omega
+# 
+# note: this ppn in the first line is not for mpi; it just is so that
+# we have all the cores in each node available to us.
+# we specify how many processors mpi will run on below, when we define np.
+#PBS -l nodes=8:ppn=8
+#PBS -m e
+#PBS -M Owen.Barrett@gmail.com
+#PBS -q fas_normal
+#PBS -l walltime=24:00:00
+#PBS -o char.o
+#PBS -N char
+
+date
+
+# put output in our work directory
+cd /home/fas/sherman/ofb/c
+# Depending on the program called
+# mkdir -p A2MultOut
+# mkdir -p A2AddOut
+# mkdir -p G2MultOut
+# mkdir -p G2AddOut
+# mkdir -p HessianMultOut
+# mkdir -p HessianAddOut
+# mkdir -p Kloosterman3Out
+# mkdir -p A3MultOut
+
+export OMP_NUM_THREADS=8
+
+# Depending on the program called
+# mpirun -pernode /home/fas/sherman/ofb/c/A2Mult 2 32 0 1 2 3
+# mpirun -pernode /home/fas/sherman/ofb/c/A2Add 2 32 0 1 2 3
+# mpirun -pernode /home/fas/sherman/ofb/c/G2Mult 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb/c/G2Add 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb/c/HessianMult 2 32 0 1 2
+# mpirun -pernode /home/fas/sherman/ofb/c/HessianAdd 2 32 0 1 2
+# mpirun -pernode /home/fas/sherman/ofb/c/Kloosterman3 2 32
+# mpirun -pernode /home/fas/sherman/ofb/c/A3Mult 2 32 0 1 4
+
+date
+
+exit 0
