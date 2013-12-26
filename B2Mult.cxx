@@ -48,7 +48,7 @@ pair< unsigned int, unsigned int > validateParams(int argc, char *argv[], unsign
 	   << "where index is the index of the prime you wish to start at, "
 	   << "iterations equals the number of iterations you wish to run, "
 	   << "and the list of lambdas equal the values for the lambda parameters"
-	   << "you wish to run.\n"
+	   << "you wish to run.\n";
       return make_pair(0, 0);
     }
   if (primeIndex + iterationCount > MAX_PRIME_INDEX) {
@@ -155,9 +155,9 @@ void fillV(const unsigned int lambdaLength,
       // = 1 + p2 + p1*p2 + p2*p2 + lambda*p1*p2*p2 + p1*p1*p2*p2
       // + p1*p2*p2*p2 + p1*p1*p2*p2*p2 + p1*p1*p2*p2*p2*p2
       mpz_add_ui(chiArg, chiArg, 1);
-      mpz_add(chiArg, p2big[0]);
+      mpz_add(chiArg, chiArg, p2big[0]);
       mpz_addmul(chiArg, p1big[0], p2big[0]);
-      mpz_add(chiArg, p2big[1]);
+      mpz_add(chiArg, chiArg, p2big[1]);
       mpz_addmul(chiArg, p1big[1], p2big[1]);
       mpz_addmul(chiArg, p1big[0], p2big[2]);
       mpz_addmul(chiArg, p1big[1], p2big[2]);
@@ -190,12 +190,12 @@ void fillV(const unsigned int lambdaLength,
 	}
       }
     }
+    mpz_clear(chiArg);
+    mpz_clear(chiArgLambda);
+    mpz_clear(zetaPower);
+    for (int i = 0; i < 2; ++i) mpz_clear(p1big[i]);
+    for (int i = 0; i < 4; ++i) mpz_clear(p2big[i]);
   }
-  mpz_clear(chiArg);
-  mpz_clear(chiArgLambda);
-  mpz_clear(zetaPower);
-  for (int i = 0; i < 2; ++i) mpz_clear(p1big[i]);
-  for (int i = 0; i < 4; ++i) mpz_clear(p2big[i]);
 
   // clean up
   for (unsigned long n = 0; n < p; ++n) {
