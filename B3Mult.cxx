@@ -206,7 +206,6 @@ void fillV(const unsigned int lambdaLength,
 	  mpz_add(chiArgLambda, chiArg, chiArgLambda);
 	  mpz_mod_ui(chiArgLambda, chiArgLambda, p);
 	  if (!mpz_sgn(chiArgLambda)) continue;
-	  cout << "chiArgLambda = " << mpz_get_ui(chiArgLambda) << "\n";
 	  logLookup = logtable[mpz_get_ui(chiArgLambda)-1];
 	  for (unsigned long c = 1; c < p-1; ++c) {
 	    // We find n*Log(a+lambda).
