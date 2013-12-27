@@ -141,17 +141,14 @@ void fillV(const unsigned int lambdaLength,
     mpz_init(zetaPower);
     mpz_init(temp);
     mpz_init_set_ui(p1big[0], p1);
-    for (int i = 1; i < 2; ++i) {
-      mpz_init(p1big[i]);      
-      mpz_mul(p1big[i], p1big[0], p1big[i-1]);
-    }
+    mpz_init(p1big[1]);      
+    mpz_mul(p1big[1], p1big[0], p1big[0]);
     for (int i = 0; i < 2; ++i) {
       mpz_init(p2big[i]);
       mpz_init(p3big[i]);
-      mpz_init(p1p2p3big[0]);
+      mpz_init(p1p2p3big[i]);
     }
     mpz_init(p3big[2]);
-    for (int i = 0; i < 3; ++i) mpz_init(p3big[i]);
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       mpz_set_ui(p2big[0], p2);
       for (int i = 1; i < 2; ++i) mpz_mul(p2big[i], p2big[0], p2big[i-1]);
