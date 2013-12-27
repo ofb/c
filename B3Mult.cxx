@@ -173,35 +173,35 @@ void fillV(const unsigned int lambdaLength,
 	mpz_addmul(chiArg, p1p2p3big[0], p3big[0]); // x*y*z^2
 	mpz_addmul(chiArg, p2big[1], p3big[1]); // y^2*z^2
 	mpz_add(chiArg, chiArg, p1p2p3big[1]); // x^2*y^2*z^2
-	mpz_set_ui(temp, 0); // x*y^3*z^2
-	mpz_addmul(temp, p1p2p3big[0], p2big[1]);
+	// x*y^3*z^2
+	mpz_mul(temp, p1p2p3big[0], p2big[1]);
 	mpz_addmul(chiArg, temp, p3big[0]);
 	mpz_addmul(chiArg, p1p2p3big[1], p2big[0]); // x^2*y^3*z^2
-	mpz_set_ui(temp, 0); // x*y^2*z^3
-	mpz_addmul(temp, p1p2p3big[0], p2big[0]);
+	// x*y^2*z^3
+	mpz_mul(temp, p1p2p3big[0], p2big[0]);
 	mpz_addmul(chiArg, temp, p3big[1]);
-	mpz_set_ui(temp, 0); // x*y^3*z^3
-	mpz_addmul(temp, p1p2p3big[0], p2big[1]);
+	// x*y^3*z^3
+	mpz_mul(temp, p1p2p3big[0], p2big[1]);
 	mpz_addmul(chiArg, temp, p3big[1]);
-	mpz_set_ui(temp, 0); // x^2*y^3*z^3
-	mpz_addmul(temp, p1p2p3big[1], p2big[0]);
+	// x^2*y^3*z^3
+	mpz_mul(temp, p1p2p3big[1], p2big[0]);
 	mpz_addmul(chiArg, temp, p3big[0]);
-	mpz_set_ui(temp, 0); // x*y^3*z^4
-	mpz_addmul(temp, p1p2p3big[0], p2big[1]);
+	// x*y^3*z^4
+	mpz_mul(temp, p1p2p3big[0], p2big[1]);
 	mpz_addmul(chiArg, temp, p3big[2]);
-	mpz_set_ui(temp, 0); // x^2*y^3*z^4
-	mpz_addmul(temp, p1p2p3big[1], p2big[0]);
+	// x^2*y^3*z^4
+	mpz_mul(temp, p1p2p3big[1], p2big[0]);
 	mpz_addmul(chiArg, temp, p3big[1]);
-	mpz_set_ui(temp, 0); // x^2*y^4*z^4
-	mpz_addmul(temp, p1p2p3big[1], p2big[1]);
+	// x^2*y^4*z^4
+	mpz_mul(temp, p1p2p3big[1], p2big[1]);
 	mpz_addmul(chiArg, temp, p3big[1]);	  
         mpz_mod_ui(chiArg, chiArg, p);
         for (unsigned int l = 0; l < lambdaLength; ++l) {
 	  mpz_set_ui(chiArgLambda, 0);
   	  mpz_set_ui(zetaPower, 0);
-	  mpz_set_ui(temp, 0); // lambda*x*y^2*z^2
+	  // lambda*x*y^2*z^2
 	  mpz_mul_ui(temp, p1p2p3big[0], lambdas[l]);
-	  mpz_addmul(temp, temp, p2big[0]);
+	  mpz_mul(temp, temp, p2big[0]);
   	  mpz_addmul(chiArgLambda, temp, p3big[0]);
 	  mpz_add(chiArgLambda, chiArg, chiArgLambda);
 	  mpz_mod_ui(chiArgLambda, chiArgLambda, p);
