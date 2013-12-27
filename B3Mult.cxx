@@ -147,23 +147,19 @@ void fillV(const unsigned int lambdaLength,
     }
     for (int i = 0; i < 2; ++i) {
       mpz_init(p2big[i]);
+      mpz_init(p3big[i]);
       mpz_init(p1p2p3big[0]);
     }
+    mpz_init(p3big[2]);
     for (int i = 0; i < 3; ++i) mpz_init(p3big[i]);
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       mpz_set_ui(p2big[0], p2);
-      for (int i = 1; i < 2; ++i) {
-	mpz_init(p2big[i]);
-	mpz_mul(p2big[i], p2big[0], p2big[i-1]);
-      }
+      for (int i = 1; i < 2; ++i) mpz_mul(p2big[i], p2big[0], p2big[i-1]);
       for (unsigned long p3 = 0; p3 < p; ++p3) {
 	mpz_set_ui(p1p2p3big[0], (((ull) p1*p2*p3) % ((ull) p)) );
 	mpz_mul(p1p2p3big[1], p1p2p3big[0], p1p2p3big[0]);
         mpz_set_ui(p3big[0], p3);
-	for (int i = 1; i < 3; ++i) {
-	  mpz_init(p3big[i]);
-	  mpz_mul(p3big[i], p3big[0], p3big[i-1]);
-	}
+	for (int i = 1; i < 3; ++i) mpz_mul(p3big[i], p3big[0], p3big[i-1]);
         mpz_set_ui(chiArg, 0);
         // our polynomial is
 	// 1 + y + x*y + y*z + x*y*z + x*y^2*z + y*z^2 + x*y*z^2 + y^2*z^2 +
