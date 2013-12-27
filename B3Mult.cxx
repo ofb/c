@@ -167,7 +167,7 @@ void fillV(const unsigned int lambdaLength,
 	// x*y^3*z^3 + x^2*y^3*z^3 + x*y^3*z^4 + x^2*y^3*z^4 + x^2*y^4*z^4
         // the way the indices of the pibig arrays work, pi^i = pibig[i-1].
         mpz_add_ui(chiArg, chiArg, 1); // 1
-	mpz_add_ui(chiArg, chiArg, p2big[0]); // y
+	mpz_add(chiArg, chiArg, p2big[0]); // y
 	mpz_addmul(chiArg, p1big[0], p2big[0]); // x*y
 	mpz_addmul(chiArg, p2big[0], p3big[0]); // y*z
 	mpz_add(chiArg, chiArg, p1p2p3big[0]); // x*y*z
