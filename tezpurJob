@@ -28,6 +28,7 @@ cd /work/obarrett
 # mkdir -p HessianAddOut
 # mkdir -p Kloosterman3Out
 # mkdir -p A3MultOut
+# mkdir -p B3MultOut
 
 cat $PBS_NODEFILE > hosts
 cat $PBS_NODEFILE | uniq > uniqhosts
@@ -46,6 +47,7 @@ let np=2*nodes
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/HessianAdd 2 32 0 1 2
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/Kloosterman3 2 32
 # mpirun -np $np -hostfile uniqhosts /work/obarrett/A3Mult 2 32 0 1 4
+# mpirun -np $np -hostfile uniqhosts /work/obarrett/B3Mult 2 32 0 1 2
 
 date
 

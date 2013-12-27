@@ -27,6 +27,7 @@ cd /home/fas/sherman/ofb3/c
 # mkdir -p HessianAddOut
 # mkdir -p Kloosterman3Out
 # mkdir -p A3MultOut
+# mkdir -p B3MultOut
 
 export OMP_NUM_THREADS=8
 
@@ -40,6 +41,7 @@ export OMP_NUM_THREADS=8
 # mpirun -pernode /home/fas/sherman/ofb3/c/HessianAdd 2 32 0 1 2
 # mpirun -pernode /home/fas/sherman/ofb3/c/Kloosterman3 2 32
 # mpirun -pernode /home/fas/sherman/ofb3/c/A3Mult 2 32 0 1 4
+# mpirun -pernode /home/fas/sherman/ofb3/c/B3Mult 2 32 0 1 2
 
 date
 
