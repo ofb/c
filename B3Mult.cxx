@@ -151,7 +151,7 @@ void fillV(const unsigned int lambdaLength,
     mpz_init(p3big[2]);
     for (unsigned long p2 = 0; p2 < p; ++p2) {
       mpz_set_ui(p2big[0], p2);
-      for (int i = 1; i < 2; ++i) mpz_mul(p2big[i], p2big[0], p2big[i-1]);
+      mpz_mul(p2big[1], p2big[0], p2big[0]);
       for (unsigned long p3 = 0; p3 < p; ++p3) {
 	mpz_set_ui(p1p2p3big[0], (((ull) p1*p2*p3) % ((ull) p)) );
 	mpz_mul(p1p2p3big[1], p1p2p3big[0], p1p2p3big[0]);
@@ -188,10 +188,10 @@ void fillV(const unsigned int lambdaLength,
 	mpz_addmul(chiArg, temp, p3big[0]);
 	mpz_set_ui(temp, 0); // x*y^3*z^4
 	mpz_addmul(temp, p1p2p3big[0], p2big[1]);
-	mpz_addmul(chiArg, temp, p3big[3]);
+	mpz_addmul(chiArg, temp, p3big[2]);
 	mpz_set_ui(temp, 0); // x^2*y^3*z^4
 	mpz_addmul(temp, p1p2p3big[1], p2big[0]);
-	mpz_addmul(chiArg, temp, p3big[2]);
+	mpz_addmul(chiArg, temp, p3big[1]);
 	mpz_set_ui(temp, 0); // x^2*y^4*z^4
 	mpz_addmul(temp, p1p2p3big[1], p2big[1]);
 	mpz_addmul(chiArg, temp, p3big[1]);	  
@@ -206,6 +206,7 @@ void fillV(const unsigned int lambdaLength,
 	  mpz_add(chiArgLambda, chiArg, chiArgLambda);
 	  mpz_mod_ui(chiArgLambda, chiArgLambda, p);
 	  if (!mpz_sgn(chiArgLambda)) continue;
+	  cout << "chiArgLambda = " << mpz_get_ui(chiArgLambda) << "\n";
 	  logLookup = logtable[mpz_get_ui(chiArgLambda)-1];
 	  for (unsigned long c = 1; c < p-1; ++c) {
 	    // We find n*Log(a+lambda).
