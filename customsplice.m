@@ -1,8 +1,8 @@
 #!/usr/local/bin/MathematicaScript -script
 
 # SetDirectory["."]
-old=ReadList["tmpold"][[1]];
-new=ReadList["tmpnew"][[1]];
+old=ReadList["tmp014"][[1]];
+new=ReadList["tmp23"][[1]];
 length=Length[old];
 
 c1=Table[Insert[old,new[[i]][[2]][[1]],{i,2,3}],{i,1,length}][[1]];
