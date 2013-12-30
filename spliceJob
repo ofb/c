@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# script for mathematica
+# 
+#PBS -l nodes=1:ppn=1
+#PBS -A hpc_startup_obarrett
+#PBS -m e
+#PBS -M Owen.Barrett@gmail.com
+#PBS -q single
+#PBS -l walltime=00:10:00
+#PBS -o splice.o
+#PBS -N splice
+
+date
+
+oldDataDir=A3MultOut
+newDataDir=A3MultOutNew
+# put output in our work directory
+cd /work/obarrett
+(echo "{"; for each in $oldDataDir/*; do cat $each; echo ","; done) > tmp014
+(echo "{"; for each in $newDataDir/*; do cat $each; echo ","; done) > tmp23
+sed -i '$s/,$/\}/' tmp014
+sed -i '$s/,$/\}/' tmp23
+sed -i 's/e/\*10\^/g' tmp014
+sed -i 's/e/\*10\^/g' tmp23
+
+mkdir -p matho
+
+math -script customsplice.m
+rm tmp014
+rm tmp23
+gnuplot mathPlot.gnuplot
+
+date
+
+exit 0
