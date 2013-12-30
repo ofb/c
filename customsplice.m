@@ -9,6 +9,7 @@ c1=Table[Insert[old,new[[i]][[2]][[1]],{i,2,3}],{i,1,length}][[1]];
 c1=Table[Insert[c1,new[[i]][[2]][[2]],{i,2,4}],{i,1,length}][[1]];
 l=c1;
 mag=l;
+length=Length[mag];
 
 For[n=1,n<=length,n++,
 mag[[n]][[2]] =Flatten[mag[[n]][[2]]]
